@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="Tanks_Server">
+</Property><Property Name="Solution File" Value="E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Tanks_Server.sln">
+</Property><Property Name="User Options File" Value="E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Tanks_Server.suo">
+</Property><Property Name="Date" Value="Sunday, November 18, 2012">
+</Property><Property Name="Time" Value="15:36 PM">
+</Property><Property Name="Log Number" Value="2">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="Tanks_Server.sln" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Tanks_Server.sln">
+</Event><Event ErrorLevel="0" Project="" Source="Tanks_Server.suo" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Tanks_Server.suo">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="lk.ac.mrt.cse.pc11.csproj" Description="Project file successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\lk.ac.mrt.cse.pc11.csproj">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="lk.ac.mrt.cse.pc11.csproj.user" Description="Project user file successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\lk.ac.mrt.cse.pc11.csproj.user">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="bean\BrickWall.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\bean\BrickWall.cs">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="bean\Bullet.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\bean\Bullet.cs">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="bean\DataObject.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\bean\DataObject.cs">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="bean\LifePack.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\bean\LifePack.cs">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="GameEngine.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\GameEngine.cs">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="GameManager.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\GameManager.cs">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="Program.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Program.cs">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="Properties\AssemblyInfo.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="RandomGen.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\RandomGen.cs">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="util\Communicator.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\util\Communicator.cs">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="App.config" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\App.config">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="nuts.ico" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\nuts.ico">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="Tank.ico" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Tank.ico">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="lk.ac.mrt.cse.pc11.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="lk.ac.mrt.cse.pc11" Source="lk.ac.mrt.cse.pc11.csproj" Description="Converted">
+</Event><Event ErrorLevel="1" Project="Support" Source="..\Support\Support.csproj" Description="Warning: The project file is being backed up to a relative path that differs from the original solution relative path.  The difference in folder hierarchy may create problems in opening or building the backed up solution and project.">
+</Event><Event ErrorLevel="0" Project="Support" Source="..\Support\Support.csproj" Description="Project file successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Support\Support.csproj">
+</Event><Event ErrorLevel="0" Project="Support" Source="..\Support\bean\AIMessage.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Support\bean\AIMessage.cs">
+</Event><Event ErrorLevel="0" Project="Support" Source="..\Support\bean\Contestant.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Support\bean\Contestant.cs">
+</Event><Event ErrorLevel="0" Project="Support" Source="..\Support\bean\MapItem.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Support\bean\MapItem.cs">
+</Event><Event ErrorLevel="0" Project="Support" Source="..\Support\bean\Treasure.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Support\bean\Treasure.cs">
+</Event><Event ErrorLevel="0" Project="Support" Source="..\Support\Properties\AssemblyInfo.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Support\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="Support" Source="..\Support\RandomGen.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Support\RandomGen.cs">
+</Event><Event ErrorLevel="0" Project="Support" Source="..\Support\util\Constant.cs" Description="File successfully backed up as E:\Semester 4\Programming challenge\Server_v3.2.0.1\lk.ac.mrt.cse.pc11\Backup\Support\util\Constant.cs">
+</Event><Event ErrorLevel="0" Project="Support" Source="..\Support\Support.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="Support" Source="..\Support\Support.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="Tanks_Server.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="Tanks_Server.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="lk.ac.mrt.cse.pc11" Source="lk.ac.mrt.cse.pc11.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event><Event ErrorLevel="0" Project="Support" Source="..\Support\Support.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>

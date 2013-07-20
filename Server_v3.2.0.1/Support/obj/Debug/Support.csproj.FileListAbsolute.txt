@@ -1,0 +1,15 @@
+C:\Users\N. H. N. D. de Silve\Desktop\ProgComp\Server\Bean\bin\Debug\Bean.dll
+C:\Users\N. H. N. D. de Silve\Desktop\ProgComp\Server\Bean\bin\Debug\Bean.pdb
+C:\Users\N. H. N. D. de Silve\Desktop\ProgComp\Server\Bean\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\N. H. N. D. de Silve\Desktop\ProgComp\Server\Bean\obj\Debug\Bean.dll
+C:\Users\N. H. N. D. de Silve\Desktop\ProgComp\Server\Bean\obj\Debug\Bean.pdb
+C:\Users\N. H. N. D. de Silve\Desktop\ProgComp\Server\Support\bin\Debug\Bean.dll
+C:\Users\N. H. N. D. de Silve\Desktop\ProgComp\Server\Support\bin\Debug\Bean.pdb
+C:\Users\N. H. N. D. de Silve\Desktop\ProgComp\Server\Support\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\N. H. N. D. de Silve\Desktop\ProgComp\Server\Support\obj\Debug\Bean.dll
+C:\Users\N. H. N. D. de Silve\Desktop\ProgComp\Server\Support\obj\Debug\Bean.pdb
+E:\Semester 4\Programming challenge\Server_v3.2.0.1\Support\bin\Debug\Bean.dll
+E:\Semester 4\Programming challenge\Server_v3.2.0.1\Support\bin\Debug\Bean.pdb
+E:\Semester 4\Programming challenge\Server_v3.2.0.1\Support\obj\Debug\ResolveAssemblyReference.cache
+E:\Semester 4\Programming challenge\Server_v3.2.0.1\Support\obj\Debug\Bean.dll
+E:\Semester 4\Programming challenge\Server_v3.2.0.1\Support\obj\Debug\Bean.pdb

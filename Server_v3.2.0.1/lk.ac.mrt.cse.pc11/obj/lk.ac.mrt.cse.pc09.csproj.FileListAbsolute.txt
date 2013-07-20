@@ -1,0 +1,6 @@
+E:\java\AvuruduThegi\lk.ac.mrt.cse.pc09\lk.ac.mrt.cse.pc09\bin\Release\lk.ac.mrt.cse.pc09.exe.config
+E:\java\AvuruduThegi\lk.ac.mrt.cse.pc09\lk.ac.mrt.cse.pc09\bin\Release\lk.ac.mrt.cse.pc09.exe
+E:\java\AvuruduThegi\lk.ac.mrt.cse.pc09\lk.ac.mrt.cse.pc09\bin\Release\lk.ac.mrt.cse.pc09.pdb
+E:\java\AvuruduThegi\lk.ac.mrt.cse.pc09\lk.ac.mrt.cse.pc09\obj\Release\ResolveAssemblyReference.cache
+E:\java\AvuruduThegi\lk.ac.mrt.cse.pc09\lk.ac.mrt.cse.pc09\obj\Release\lk.ac.mrt.cse.pc09.exe
+E:\java\AvuruduThegi\lk.ac.mrt.cse.pc09\lk.ac.mrt.cse.pc09\obj\Release\lk.ac.mrt.cse.pc09.pdb
