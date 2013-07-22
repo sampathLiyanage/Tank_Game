@@ -23,8 +23,8 @@ namespace WindowsGame1
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
-        Communicator com;
-        Operator opr;
+        WarField wf;
+        Commandor cmdr;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         
@@ -45,9 +45,8 @@ namespace WindowsGame1
         {
             // TODO: Add your initialization logic here
 
-            com = new Communicator();
-            opr = new Operator(com);
-            opr.join();
+            wf = WarField.Instance; //prepair game model, join game
+            cmdr = new Commandor(wf);   //start game
             base.Initialize();
         }
 
@@ -102,85 +101,155 @@ namespace WindowsGame1
         }
     }
 
-    public class Communicator {
-        private Stream stm;
-        private Thread listner;
+
+    /*
+     * ######################
+     * Communicator Component 
+     *#######################
+     */
+
+    
+    /*
+     *A singleton class that start a connection to the server and listen 
+     * 
+     * First get an instatnce calling "Listner.Instance"
+     * Then call start(WarField wf) method
+     * All the responses from server will be sent to WarField.inputData(Byte[] b) method.
+     */
+    public class Listner {
+
+        private Thread listnerTrd;
         private NetworkStream serverStream;
-        private TcpClient client;
-        private Operator opr;
-        public Communicator()
+        private WarField warfield;
+
+        static Listner instance = null;
+        static readonly object padlock = new object();
+
+         private Listner()
         {
-            
-
-            try
-            {
-                listner = new Thread(new ThreadStart(this.listen));
-                listner.Start();
-
-            }
-
-            catch (Exception e)
-            {
-                Console.WriteLine("Error..... " + e.StackTrace);
-            }
-        }
-        
-        public void addOperator(Operator o){
-            opr = o;
+             //empty
         }
 
-        private void listen() {
+        //Singleton Instatnce method
+         public static Listner Instance
+         {
+             get
+             {
+                 lock (padlock)
+                 {
+                     if (instance == null)
+                     {
+                         instance = new Listner();
+                     }
+                     return instance;
+                 }
+             }
+         }
 
-            IPAddress ipAd = IPAddress.Parse("127.0.0.1");
-                // use local m/c IP address, and 
-                // use the same in the client
+        //start listning
+         public void start(WarField wf) {
+             warfield = wf;
+             try
+             {
+                 //starting a new thread for listning
+                 listnerTrd = new Thread(new ThreadStart(this.listen));
+                 listnerTrd.Start();
+             }
 
-                /* Initializes the Listener */
-                TcpListener myList = new TcpListener(ipAd, 7000);
+             catch (Exception e)
+             {
+                 Console.WriteLine("Error..... " + e.StackTrace);
+             }
+         }
 
-                /* Start Listeneting at the specified port */
-                myList.Start();
+         private void listen()
+         {
 
-                Console.WriteLine("The server is running at port 8001...");
-                Console.WriteLine("The local End point is  :" +
-                                  myList.LocalEndpoint);
-                Console.WriteLine("Waiting for a connection.....");
+             IPAddress ipAd = IPAddress.Parse("127.0.0.1");
+             // use local m/c IP address, and 
+             // use the same in the client
 
-                Socket soc;
- 
-                while (true)
-                {
-                    //connection is connected socket
-                    soc = myList.AcceptSocket();
-                    if (soc.Connected)
-                    {
-                        //To read from socket create NetworkStream object associated with socket
-                        serverStream = new NetworkStream(soc);
+             /* Initializes the Listener */
+             TcpListener myList = new TcpListener(ipAd, 7000);
 
-                        SocketAddress sockAdd = soc.RemoteEndPoint.Serialize();
-                        string s = soc.RemoteEndPoint.ToString();
-                        List<Byte> inputStr = new List<byte>();
+             /* Start Listeneting at the specified port */
+             myList.Start();
 
-                        int asw = 0;
-                        while (asw != -1)
-                        {
-                            asw = this.serverStream.ReadByte();
-                            inputStr.Add((Byte)asw);
-                            if (Convert.ToChar(asw).Equals('#'))
-                            {
-                                opr.inputData(inputStr.ToArray());
-                                break;
-                            }
-                        }
-                    }
-                    serverStream.Close();
-                    soc.Close();
-                }
-            
-           
+             Console.WriteLine("The server is running at port 8001...");
+             Console.WriteLine("The local End point is  :" +
+                               myList.LocalEndpoint);
+             Console.WriteLine("Waiting for a connection.....");
+
+             Socket soc;
+
+             while (true)
+             {
+                 //connection is connected socket
+                 soc = myList.AcceptSocket();
+                 if (soc.Connected)
+                 {
+                     //To read from socket create NetworkStream object associated with socket
+                     serverStream = new NetworkStream(soc);
+
+                     SocketAddress sockAdd = soc.RemoteEndPoint.Serialize();
+                     string s = soc.RemoteEndPoint.ToString();
+                     List<Byte> inputStr = new List<byte>();
+
+                     int asw = 0;
+                     while (asw != -1)
+                     {
+                         asw = this.serverStream.ReadByte();
+                         inputStr.Add((Byte)asw);
+                         if (Convert.ToChar(asw).Equals('#'))
+                         {
+                             warfield.inputData(inputStr.ToArray());
+                             break;
+                         }
+                     }
+                 }
+                 serverStream.Close();
+                 soc.Close();
+             }
+
+
+         }
+    }
+
+
+    /*
+     *A singleton class that start a connection to the server and response
+     * 
+     * First get an instatnce calling "Response.Instance"
+     * Then call sendData(String response) method to send responses to server
+     */
+    public class Response {
+        private Stream stm;
+        private TcpClient client;
+
+        static Response instance = null;
+        static readonly object padlock = new object();
+
+        private Response(){
         }
 
-        public void SendData(String msg)
+        //Syngleton Instatnce method
+        public static Response Instance
+         {
+             get
+             {
+                 lock (padlock)
+                 {
+                     if (instance == null)
+                     {
+                         instance = new Response();
+                     }
+                     return instance;
+                 }
+             }
+         }
+
+        //sending response to server
+        public void sendData(String msg)
         {
             //Opening the connection
             client = new TcpClient();
@@ -218,166 +287,18 @@ namespace WindowsGame1
                 client.Close();
             }
         }
-
        
     }
 
-    public class Operator
-    {
-        private bool started;
-        private Communicator com;
-        private String mytankName;
-        private WarField warfield;
-        private Char[] dataIn;
-        private Commandor commander;
-        public Operator(Communicator c) {
-            com = c;
-            com.addOperator(this);
-            warfield = new WarField();
-            started = false;
-        }
-
-        public void join() {
-            com.SendData("JOIN#");
-        }
-
-        public void inputData(Byte[] input) {
-            dataIn = new Char[input.Length];
-            for (int i = 0; input.Length > i; i++ )
-            {
-                dataIn[i] = Convert.ToChar(input[i]);
-                System.Console.Write(dataIn[i]);
-            }
-            System.Console.WriteLine();
-            if (dataIn[0].Equals('I') && dataIn[1].Equals(':')) {  //if game is being intiated
-                initiateGame(dataIn);
-            }
-
-            else if (dataIn[0].Equals('G') && dataIn[1].Equals(':'))
-            {  //if game is being intiated
-                updateView(dataIn);
-            }
-
-            //if coins appear
-            else if (dataIn[0].Equals('C') && dataIn[1].Equals(':')) {
-                updateCoins(dataIn);
-            }
-
-        }
-
-        public void outputData(String output) {
-            com.SendData(output);
-        }
-
-        public void initiateGame(Char[] dataInput){
-            System.Console.WriteLine("game is initiating");
-                String operands = new String(dataInput);
-                operands=operands.Replace("#","");
-                string[] operands_1 = Regex.Split(operands, ":");
-       
-                mytankName=operands_1[1];
-                warfield.newTank(operands_1[1]);
-                string[] operands_12 = Regex.Split(operands_1[2], ";");
-                for (int i = 0; i < operands_12.Length; i++) {
-                    String[] operands_12i = Regex.Split(operands_12[i], ",");
-                    warfield.newBrick(Convert.ToInt16(operands_12i[0]), Convert.ToInt16(operands_12i[1]));
-                }
-
-                string[] operands_13 = Regex.Split(operands_1[3], ";");
-                for (int i = 0; i < operands_13.Length; i++)
-                {
-                    String[] operands_13i = Regex.Split(operands_13[i], ",");
-                    warfield.newStone(Convert.ToInt16(operands_13i[0]), Convert.ToInt16(operands_13i[1]));
-                }
-
-                string[] operands_14 = Regex.Split(operands_1[4], ";");
-                for (int i = 0; i < operands_14.Length; i++)
-                {
-                    String[] operands_14i = Regex.Split(operands_14[i], ",");
-
-                    warfield.newWater(Convert.ToInt16(operands_14i[0]), Convert.ToInt16(operands_14i[1]));
-                }
-
-                for (int i = 0; i < 10; i++) {
-                    for (int j = 0; j < 10; j++) {
-                        System.Console.Write(warfield.getField()[i,j].type);
-                        System.Console.Write(" ");
-                    }
-                    System.Console.WriteLine();
-                }
-
-                commander = new Commandor(warfield, com, warfield.getTank(mytankName));
-                Thread thread = new Thread(new ThreadStart(commander.act));
-                thread.Start();
-        }
 
 
-        public void updateView(Char[] dataInput)
-        {
-            System.Console.WriteLine("game is updating");
-            String operands = new String(dataInput);
-            operands = operands.Replace("#", "");
-            string[] operands_1 = Regex.Split(operands, ":");
-            String[] operands_2;
-            for (int i = 1; i < operands_1.Length - 1; i++) {
-                operands_2 = Regex.Split(operands_1[i], ";");
-                String nm = Convert.ToString(operands_2[0]);
-                String[] operands_21= Regex.Split(operands_2[1], ",");
-                int X = Convert.ToInt32(operands_21[0]);
-                int Y = Convert.ToInt32(operands_21[1]);
-                int dir = Convert.ToInt32(operands_2[2]);
-                bool ws = Convert.ToBoolean(Convert.ToInt16(operands_2[3]));
-                int h = Convert.ToInt32(operands_2[4]);
-                int c = Convert.ToInt32(operands_2[5]);
-                int p = Convert.ToInt32(operands_2[6]);
-                warfield.setTank(nm, X, Y, dir, ws, h, c, p);
-            }
+    /*
+     * #######################
+     *the game model component
+     * #######################
+    */
 
-            String[] operands_3 = Regex.Split(operands_1[operands_1.Length-1], ";");
-            for (int i = 0; i < operands_3.Length; i++) {
-                String[] operands_31 = Regex.Split(operands_3[i], ",");
-                int X = Convert.ToInt32(operands_31[0]);
-                int Y = Convert.ToInt32(operands_31[1]);
-                int damage = Convert.ToInt32(operands_31[2]);
-                warfield.setDamage(X,Y,damage);
-            }
-
-
-            warfield.update(); //updating coins and life packs
-
-
-            //printing map on console
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-                    System.Console.Write(warfield.getField()[i, j].type);
-                    System.Console.Write(" ");
-                }
-                System.Console.WriteLine();
-            }
-
-
-        }
-
-        public void updateCoins(Char[] dataInput) {
-            System.Console.WriteLine("new coins appear");
-            String operands = new String(dataInput);
-            operands = operands.Replace("#", "");
-            string[] operands_1 = Regex.Split(operands, ":");
-            String[] operands_2 = Regex.Split(operands_1[1], ",");
-            int X = Convert.ToInt16(operands_2[0]);
-            int Y = Convert.ToInt16(operands_2[1]);
-            int lt = Convert.ToInt32(operands_1[2]);
-            int vl = Convert.ToInt32(operands_1[3]);
-            warfield.newCoins(X, Y, vl, lt);
-        }
-
-
-                
-    }
-
-
+    //represent a location (ie: 10*10 locations in the game)
     public abstract class Location
     {
         public int x, y;
@@ -392,6 +313,7 @@ namespace WindowsGame1
         }
     }
 
+    //represents an Empty Location (ie: locations without any object like tank, water, wall)
     public class EmptyLoc : Location
     {
         public EmptyLoc(int x, int y, Location[,] wf)
@@ -401,6 +323,7 @@ namespace WindowsGame1
         }
     }
 
+    //represents a tank
     public class Tank :Location{
             private int direction; //0=N, 1=E, 2=S, 3=W
             private bool whetherShot;
@@ -413,7 +336,8 @@ namespace WindowsGame1
                 warfield=wf;
                 name=nm;
             }
-
+            
+            //set location of the tank
             public void Set(int locX, int locY, int dir, bool ws, int h, int c, int p){
                 if (initiated==true){
                     warfield[x,y] = new EmptyLoc(x,y,warfield);
@@ -431,7 +355,9 @@ namespace WindowsGame1
                 points=p;
                 warfield[x,y]=this;
             }
-
+            
+            //input: next location cordinate calculated by game engine (supposed to be an adjesent location)
+            //output: the command or string "nothing"
             public String getCommand(int crdX, int crdY) {
                 if (crdY == y + 1 && crdX == x)
                     return "DOWN#";
@@ -446,6 +372,7 @@ namespace WindowsGame1
             }
         }
 
+    //represent coins
     public class Coins : Location
     {
         int value;
@@ -474,13 +401,22 @@ namespace WindowsGame1
         }
     }
 
-
+    //represents war field (game environment)
+    //this is a singleton class
     public class WarField{
         private Location[,] wfield;
         public Hashtable tanks;
         private List<Coins> coinList;
+        private Listner listner;
+        private Response response;
+        private Char[] dataIn;
+        private String mytankName;
+        private bool initiated;
 
-        public WarField(){
+        static WarField instance = null;
+        static readonly object padlock = new object();
+
+        private WarField(){
             wfield= new Location[10,10];
             for (int i=0; i<10; i++){
                 for(int j=0; j<10; j++){
@@ -489,18 +425,178 @@ namespace WindowsGame1
             }
             tanks = new Hashtable();
             coinList = new List<Coins>();
+            listner = Listner.Instance;
+            listner.start(this);
+            initiated = false;
+            response = Response.Instance;
+
+            //join game
+            response.sendData("JOIN#");
         }
 
-       
+        //singleton instance method
+        public static WarField Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new WarField();
+                    }
+                    return instance;
+                }
+            }
+        }
 
-        
+        //input from the listner instance
+        public void inputData(Byte[] input)
+        {
+            dataIn = new Char[input.Length];
+            for (int i = 0; input.Length > i; i++)
+            {
+                dataIn[i] = Convert.ToChar(input[i]);
+                System.Console.Write(dataIn[i]);
+            }
+            System.Console.WriteLine();
+            if (dataIn[0].Equals('I') && dataIn[1].Equals(':'))
+            {  //if game is being intiated
+                initiateGame(dataIn);
+            }
 
+            else if (dataIn[0].Equals('G') && dataIn[1].Equals(':'))
+            {  //if game is being intiated
+                updateView(dataIn);
+            }
+
+            //if coins appear
+            else if (dataIn[0].Equals('C') && dataIn[1].Equals(':'))
+            {
+                updateCoins(dataIn);
+            }
+
+        }
+
+        //initiate game
+        private void initiateGame(Char[] dataInput)
+        {
+            System.Console.WriteLine("game is initiating");
+            String operands = new String(dataInput);
+            operands = operands.Replace("#", "");
+            string[] operands_1 = Regex.Split(operands, ":");
+
+            mytankName = operands_1[1];
+            this.newTank(operands_1[1]);
+            string[] operands_12 = Regex.Split(operands_1[2], ";");
+            for (int i = 0; i < operands_12.Length; i++)
+            {
+                String[] operands_12i = Regex.Split(operands_12[i], ",");
+                this.newBrick(Convert.ToInt16(operands_12i[0]), Convert.ToInt16(operands_12i[1]));
+            }
+
+            string[] operands_13 = Regex.Split(operands_1[3], ";");
+            for (int i = 0; i < operands_13.Length; i++)
+            {
+                String[] operands_13i = Regex.Split(operands_13[i], ",");
+                this.newStone(Convert.ToInt16(operands_13i[0]), Convert.ToInt16(operands_13i[1]));
+            }
+
+            string[] operands_14 = Regex.Split(operands_1[4], ";");
+            for (int i = 0; i < operands_14.Length; i++)
+            {
+                String[] operands_14i = Regex.Split(operands_14[i], ",");
+
+                this.newWater(Convert.ToInt16(operands_14i[0]), Convert.ToInt16(operands_14i[1]));
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    System.Console.Write(this.getField()[i, j].type);
+                    System.Console.Write(" ");
+                }
+                System.Console.WriteLine();
+            }
+
+            initiated = true;
+        }
+
+        //update game view according to the server responces
+        private void updateView(Char[] dataInput)
+        {
+            System.Console.WriteLine("game is updating");
+            String operands = new String(dataInput);
+            operands = operands.Replace("#", "");
+            string[] operands_1 = Regex.Split(operands, ":");
+            String[] operands_2;
+            for (int i = 1; i < operands_1.Length - 1; i++)
+            {
+                operands_2 = Regex.Split(operands_1[i], ";");
+                String nm = Convert.ToString(operands_2[0]);
+                String[] operands_21 = Regex.Split(operands_2[1], ",");
+                int X = Convert.ToInt32(operands_21[0]);
+                int Y = Convert.ToInt32(operands_21[1]);
+                int dir = Convert.ToInt32(operands_2[2]);
+                bool ws = Convert.ToBoolean(Convert.ToInt16(operands_2[3]));
+                int h = Convert.ToInt32(operands_2[4]);
+                int c = Convert.ToInt32(operands_2[5]);
+                int p = Convert.ToInt32(operands_2[6]);
+                this.setTank(nm, X, Y, dir, ws, h, c, p);
+            }
+
+            String[] operands_3 = Regex.Split(operands_1[operands_1.Length - 1], ";");
+            for (int i = 0; i < operands_3.Length; i++)
+            {
+                String[] operands_31 = Regex.Split(operands_3[i], ",");
+                int X = Convert.ToInt32(operands_31[0]);
+                int Y = Convert.ToInt32(operands_31[1]);
+                int damage = Convert.ToInt32(operands_31[2]);
+                this.setDamage(X, Y, damage);
+            }
+
+
+            this.update(); //updating coins and life packs
+
+
+            //printing map on console
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    System.Console.Write(this.getField()[i, j].type);
+                    System.Console.Write(" ");
+                }
+                System.Console.WriteLine();
+            }
+
+
+        }
+
+        //update coins according to the server responses
+        private void updateCoins(Char[] dataInput)
+        {
+            System.Console.WriteLine("new coins appear");
+            String operands = new String(dataInput);
+            operands = operands.Replace("#", "");
+            string[] operands_1 = Regex.Split(operands, ":");
+            String[] operands_2 = Regex.Split(operands_1[1], ",");
+            int X = Convert.ToInt16(operands_2[0]);
+            int Y = Convert.ToInt16(operands_2[1]);
+            int lt = Convert.ToInt32(operands_1[2]);
+            int vl = Convert.ToInt32(operands_1[3]);
+            this.newCoins(X, Y, vl, lt);
+        }
+
+        //represents stone
         private class Stone :Location{
             public Stone(int x, int y,Location[,] wf) :base("stone", x, y){
                 wf[x,y]=this;
             }
         }
-         
+        
+        //represents brick
         private class Brick :Location{
             private int damageLevel;
             public Brick(int x, int y, Location[,] wf) :base("brick", x, y){
@@ -515,7 +611,8 @@ namespace WindowsGame1
                 }
             }
         }
-         
+        
+        //represents water
         private class Water :Location{
             public Water(int x, int y, Location[,] wf) :base("water", x, y){
                 wf[x,y]=this;
@@ -523,47 +620,53 @@ namespace WindowsGame1
         }
 
 
-        public void newEmptyLoc(int X, int Y){
+        private void newEmptyLoc(int X, int Y){
             new EmptyLoc(X,Y,wfield);
         }
 
-        public void newStone(int X, int Y){
+        private void newStone(int X, int Y)
+        {
             new Stone(X,Y,wfield);
         }
 
-        public void newBrick(int X, int Y){
+        private void newBrick(int X, int Y)
+        {
             new Brick(X,Y,wfield);
         }
 
-        public void newWater(int X, int Y){
+        private void newWater(int X, int Y)
+        {
             new Water(X,Y,wfield);
         }
 
-        public void newTank(String nm){
+        private void newTank(String nm)
+        {
             tanks.Add(nm,new Tank(nm, 0,0,wfield));
         }
 
-        public Location[,] getField() {
-            return wfield;
-        }
+        
 
-        public void setTank (String name, int X, int Y, int dir, bool ws, int h, int c, int p){
+        private void setTank(String name, int X, int Y, int dir, bool ws, int h, int c, int p)
+        {
             if (!tanks.ContainsKey(name)) {
                 newTank(name);
             }
             ((Tank)tanks[name]).Set(X, Y, dir, ws, h, c, p);
         }
 
-        public void setDamage(int X, int Y, int damage) {
+        private void setDamage(int X, int Y, int damage)
+        {
             ((Brick)wfield[X, Y]).setDamage(damage, this.wfield);
         }
 
-        public void newCoins(int X, int Y, int v, int t) {
+        private void newCoins(int X, int Y, int v, int t)
+        {
             coinList.Add(new Coins(X, Y, v, t, wfield));
         }
 
         //should be called to update coins and life packs when they are expired
-        public void update() {
+        private void update()
+        {
             //updating coins
                 List<Coins> newCList = new List<Coins>();
                 foreach (Coins c in coinList)
@@ -583,62 +686,95 @@ namespace WindowsGame1
 
         }
 
-        public List<Coins> getCoins() {
-            return coinList;
-        }
+        
 
-        public void removeCoins(Coins c) {
+        private void removeCoins(Coins c)
+        {
             coinList.Remove(c);
         }
 
+
+        //functions to be called by game engine
         public Location getTank(String nm) {
             return (Location)tanks[nm];
         }
 
+        public List<Coins> getCoins()
+        {
+            return coinList;
+        }
+
+        public Location[,] getField()
+        {
+            return wfield;
+        }
+
+        public Location getMyTank() {
+            while (!initiated) ;
+            return (Location)tanks[mytankName];
+        }
     }
 
-    public class Commandor {
 
+
+    /*
+     * ######################
+     * Game engine components
+     * ######################
+     * 
+     */
+
+   
+    public class Commandor {
 
         private bool[,] checkedLocs;
         private WarField warField;
         private Location myTank;
-        private Communicator communicator;
+        private Response response;
         private bool pathFound;
-        private DateTime lastCommandTime;
         private Coins followingCoins;
+        private Thread listnerTrd;
+        private Timer myTimer;
+        private String bestCommand;
 
-        public Commandor(WarField wf, Communicator com, Location aTank)
+        public Commandor(WarField wf)
         {
             warField = wf;
-            myTank = aTank;
-            communicator = com;
+            myTank = warField.getMyTank();
+            response = Response.Instance;
             pathFound = false;
             checkedLocs = new bool[10, 10];
-            lastCommandTime = DateTime.Now;
+
+            bestCommand = "nothing";
+
+            //setting timer for send responses to server after every second
+            TimerCallback tcb = this.sendCommand;
+            AutoResetEvent autoEvent = new AutoResetEvent(false);
+            myTimer = new Timer(tcb,autoEvent,0,1200);
+
+            //starting a thread to calculate the next best command
+            listnerTrd = new Thread(new ThreadStart(this.act));
+            listnerTrd.Start();
+           
         }
 
+        //to be called once a second
+        public void sendCommand(Object stateInfo)
+        {  if (!bestCommand.Equals("nothing"))
+                response.sendData(bestCommand);
+        }
+
+        //calculate best next command
         public void act()
         {
             while (true)
             {
-                DateTime now = DateTime.Now;
-                TimeSpan diff = now.Subtract(lastCommandTime);
-                while (diff.TotalMilliseconds < 1000)
-                {
-                    now = DateTime.Now;
-                    diff = now.Subtract(lastCommandTime);
-                }
-
-                String command = getCommand();
-                if (!command.Equals("nothing")){
-                    communicator.SendData(getCommand());
-                    lastCommandTime = DateTime.Now;
-                }
+                bestCommand = getCommand();
             }
         }
 
-        public String getCommand() {
+        //breadth first search to get next best command
+        private String getCommand() {
             pathFound = false;
             for (int i = 0; i < 10; i++)
             {
@@ -757,4 +893,25 @@ namespace WindowsGame1
             }
         }
     }
+
+
+    /*
+     * ############################
+     * Graphic Controller component (to be implemented)
+     * ############################
+     * 
+     * Easy to implemet
+     * Just access the 2D array by calling "WarField.getField()" method
+     * access the Location objects of the 2D Array and render the graphic according to the types of locations using XNA framework
+     */
+
+    /*
+     * ##############
+     * GUI component (to be implemented)
+     * ##############
+     * 
+     * Implement if features like a button for start the game, end the game are needed
+     * otherwise game will start when program runs
+     * 
+     */
 }
