@@ -180,7 +180,8 @@ namespace WindowsGame1
             response = Response.Instance;
 
             //join game
-            response.sendData("JOIN#");
+           
+            while(!response.sendData("JOIN#"));
         }
 
         //singleton instance method

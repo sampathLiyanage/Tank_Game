@@ -137,12 +137,19 @@ namespace WindowsGame1
     {
         private Stream stm;
         private TcpClient client;
-
+        private DateTime lastResponseTime;
         static Response instance = null;
         static readonly object padlock = new object();
+        private int responseTimeInterval;
+        private IPAddress ipAd;
+        private int serverPort;
 
         private Response()
         {
+            lastResponseTime = DateTime.Now;
+            responseTimeInterval = Convert.ToInt16(ConfigurationSettings.AppSettings.Get("responseTimeInterval"));
+            ipAd = IPAddress.Parse(ConfigurationSettings.AppSettings.Get("ServerIp"));
+            serverPort = Convert.ToInt16(ConfigurationSettings.AppSettings.Get("ServerPort"));
         }
 
         //Syngleton Instatnce method
@@ -163,45 +170,54 @@ namespace WindowsGame1
 
         //sending response to server
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void sendData(String msg)
+        public bool sendData(String msg)
         {
-            //Opening the connection
-            client = new TcpClient();
-            IPAddress ipAd = IPAddress.Parse(ConfigurationSettings.AppSettings.Get("ServerIp"));
-            BinaryWriter writer;
-            try
+            DateTime now = DateTime.Now;
+            TimeSpan diff = now.Subtract(lastResponseTime);
+            System.Console.WriteLine("time interval" +diff.TotalMilliseconds);
+            if (diff.TotalMilliseconds >= responseTimeInterval)
             {
 
-
-                client.Connect(ipAd, Convert.ToInt16(ConfigurationSettings.AppSettings.Get("ServerPort")));
-
-                if (client.Connected)
+                //Opening the connection
+                client = new TcpClient();
+                BinaryWriter writer;
+                try
                 {
-                    //To write to the socket
-                    stm = client.GetStream();
 
-                    //Create objects for writing across stream
-                    writer = new BinaryWriter(stm);
-                    Byte[] tempStr = Encoding.ASCII.GetBytes(msg);
 
-                    //writing to the port                
-                    writer.Write(tempStr);
-                    System.Console.WriteLine("command send: " + msg + " thread " + Thread.CurrentThread.ManagedThreadId);
-                    writer.Close();
-                    this.stm.Close();
+                    client.Connect(ipAd,serverPort);
+
+                    if (client.Connected)
+                    {
+                        //To write to the socket
+                        stm = client.GetStream();
+
+                        //Create objects for writing across stream
+                        writer = new BinaryWriter(stm);
+                        Byte[] tempStr = Encoding.ASCII.GetBytes(msg);
+
+                        //writing to the port                
+                        writer.Write(tempStr);
+                        System.Console.WriteLine("command send: " + msg + " thread " + Thread.CurrentThread.ManagedThreadId);
+                        lastResponseTime = DateTime.Now;
+                        writer.Close();
+                        this.stm.Close();
+                    }
+
                 }
+                catch (Exception e)
+                {
 
+                }
+                finally
+                {
+                    client.Close();
+                   
+                }
+                return true;
             }
-            catch (Exception e)
-            {
-
-            }
-            finally
-            {
-                client.Close();
-            }
+            return false;
         }
-
     }
 
 

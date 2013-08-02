@@ -28,10 +28,12 @@ namespace WindowsGame1
         private String bestCommand;
         private bool[,] checkedLocs;
         private int[,] distanceMatrix;
+        private int brainLevelToFindCoins;
 
         public Commandor(WarField wf)
         {
             mapSize = Convert.ToInt16(ConfigurationSettings.AppSettings.Get("MapSize"));
+            brainLevelToFindCoins = Convert.ToInt16(ConfigurationSettings.AppSettings.Get("brainLevelToFindCoins"));
             warField = wf;
             myTank = warField.getMyTank();
             response = Response.Instance;
@@ -56,8 +58,14 @@ namespace WindowsGame1
         //to be called once a second
         public void sendCommand(Object stateInfo)
         {
-            if (!bestCommand.Equals("nothing"))
-                response.sendData(bestCommand);
+            lock (bestCommand)
+            {
+                if (!bestCommand.Equals("nothing"))
+                {
+                    response.sendData(bestCommand);
+                    System.Console.WriteLine("ssssssssssssssssssssssssssseeeeeeeeeeeeeeeeeennnnnnnnnnnnnnddddddddddd");
+                }
+            }
         }
 
         //calculate best next command
@@ -66,7 +74,7 @@ namespace WindowsGame1
             while (true)
             {
                 
-                if (myTank.newCoins) {
+                if (myTank.newCoins && brainLevelToFindCoins==2) {
                     int dst= distToTankIfNearest(myTank.target.coinLoc,myTank);
                     if (dst != -1)
                     {
@@ -85,11 +93,10 @@ namespace WindowsGame1
         //breadth first search to get next best command
         private String getCommand()
         {
-            if (myTank.target != null && !(warField.getField())[myTank.target.coinLoc.x, myTank.target.coinLoc.y].type.Equals("coins"))
+            if (myTank.target != null && !(warField.getField())[myTank.target.coinLoc.x, myTank.target.coinLoc.y].type.Equals("coins") && brainLevelToFindCoins==2)
             {
                 myTank.targetLock = false;
                 myTank.target = null;
-                myTank.destToTarget = 1000;
             }
 
         
@@ -104,7 +111,7 @@ namespace WindowsGame1
             int distCount;
 
             Location targetCoins;
-            if (myTank.targetLock && (warField.getField())[myTank.target.coinLoc.x, myTank.target.coinLoc.y].type.Equals("coins"))
+            if (myTank.targetLock && (warField.getField())[myTank.target.coinLoc.x, myTank.target.coinLoc.y].type.Equals("coins") && brainLevelToFindCoins == 2)
             {
                 targetCoins = findLocationAndConfigPath(myTank.tankLoc, myTank.target.coinLoc);
             }
@@ -158,12 +165,12 @@ namespace WindowsGame1
                     checkedLocs[i, j] = false;
             }
 
-            Queue<Location> q = new Queue<Location>();
-            q.Enqueue(src);
+            priorityLocationQueue q = new priorityLocationQueue();
+            q.enqueue(src, heuristic(src));
             checkedLocs[src.x, src.y] = true;
-            while (q.Count != 0)
+            while (q.count() != 0)
             {
-                tempLoc = q.Dequeue();
+                tempLoc = q.dequeue();
 
                 if (objTocompare.GetType()==typeof(String))
                 {
@@ -193,7 +200,7 @@ namespace WindowsGame1
                             tempLoc1.parentLoc = tempLoc;
                             tempLoc1.distFromSrc = tempLoc.distFromSrc + 1;
                             checkedLocs[tempLoc1.x, tempLoc1.y] = true;
-                            q.Enqueue(tempLoc1);
+                            q.enqueue(tempLoc1, heuristic(tempLoc1));
                         }
                     }
                 }
@@ -209,7 +216,7 @@ namespace WindowsGame1
                             tempLoc2.parentLoc = tempLoc;
                             tempLoc2.distFromSrc = tempLoc.distFromSrc + 1;
                             checkedLocs[tempLoc2.x, tempLoc2.y] = true;
-                            q.Enqueue(tempLoc2);
+                            q.enqueue(tempLoc2, heuristic(tempLoc2));
                         }
                     }
                 }
@@ -225,7 +232,7 @@ namespace WindowsGame1
                             tempLoc3.parentLoc = tempLoc;
                             tempLoc3.distFromSrc = tempLoc.distFromSrc + 1;
                             checkedLocs[tempLoc3.x, tempLoc3.y] = true;
-                            q.Enqueue(tempLoc3);
+                            q.enqueue(tempLoc3, heuristic(tempLoc3));
                         }
                     }
                 }
@@ -241,7 +248,7 @@ namespace WindowsGame1
                             tempLoc4.parentLoc = tempLoc;
                             tempLoc4.distFromSrc = tempLoc.distFromSrc + 1;
                             checkedLocs[tempLoc4.x, tempLoc4.y] = true;
-                            q.Enqueue(tempLoc4);
+                            q.enqueue(tempLoc4, heuristic(tempLoc1));
                         }
                     }
                 }
@@ -250,6 +257,38 @@ namespace WindowsGame1
 
             return null;
         }
+
+        //to find nearest coins
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private int heuristic(Location src)
+        {
+            if (src == null)
+                return -1;
+            int min = 1000;
+            Location loc=null;
+
+            for (int i = 0; i < mapSize; i++)
+            {
+                for (int j = 0; j < mapSize; j++)
+                {
+                    if (warField.getField()[i, j].type == "coins")
+                    {
+                        Location tempLoc = warField.getField()[i, j];
+                        int temp = Math.Abs(src.x - tempLoc.x) + Math.Abs(src.y - tempLoc.y) + 1;
+                        if (min > temp)
+                        {
+                            min = temp;
+                            loc = tempLoc;
+                        }
+                    }
+                }
+            }
+
+           if (loc == null)
+               return -1;
+           return Math.Abs(src.x - loc.x) + Math.Abs(src.y - loc.y) + 1; ;
+        }
+
 
         private int distToTankIfNearest(Location src, Tank dest)
         {
@@ -260,12 +299,12 @@ namespace WindowsGame1
                     distanceMatrix[i, j] = -1;
             }
 
-            Queue<Location> q = new Queue<Location>();
-            q.Enqueue(src);
+            priorityLocationQueue q = new priorityLocationQueue();
+            q.enqueue(src,heuristic(src,dest.tankLoc));
             distanceMatrix[src.x, src.y] = 0;
-            while (q.Count != 0)
+            while (q.count() != 0)
             {
-                tempLoc = q.Dequeue();
+                tempLoc = q.dequeue();
                 if (tempLoc.type.Equals("tank") || distanceMatrix[tempLoc.x, tempLoc.y] >= dest.destToTarget)
                 {
                     if (tempLoc == dest.tankLoc)
@@ -286,7 +325,8 @@ namespace WindowsGame1
                         neighbrType = warField.getField()[tempLoc.x - 1, tempLoc.y].type;
                         if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone"))
                         {
-                            q.Enqueue(warField.getField()[tempLoc.x - 1, tempLoc.y]);
+                            Location temp=warField.getField()[tempLoc.x - 1, tempLoc.y];
+                            q.enqueue(temp, heuristic(temp, dest.tankLoc));
                             distanceMatrix[tempLoc.x - 1, tempLoc.y] = distanceMatrix[tempLoc.x, tempLoc.y] + 1;
                         }
                     }
@@ -296,7 +336,8 @@ namespace WindowsGame1
                         neighbrType = warField.getField()[tempLoc.x + 1, tempLoc.y].type;
                         if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone"))
                         {
-                            q.Enqueue(warField.getField()[tempLoc.x + 1, tempLoc.y]);
+                            Location temp = warField.getField()[tempLoc.x + 1, tempLoc.y];
+                            q.enqueue(temp, heuristic(temp, dest.tankLoc));
                             distanceMatrix[tempLoc.x + 1, tempLoc.y] = distanceMatrix[tempLoc.x, tempLoc.y] + 1;
                         }
                     }
@@ -306,7 +347,8 @@ namespace WindowsGame1
                         neighbrType = warField.getField()[tempLoc.x, tempLoc.y - 1].type;
                         if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone"))
                         {
-                            q.Enqueue(warField.getField()[tempLoc.x, tempLoc.y - 1]);
+                            Location temp = warField.getField()[tempLoc.x, tempLoc.y - 1];
+                            q.enqueue(temp, heuristic(temp, dest.tankLoc));
                             distanceMatrix[tempLoc.x, tempLoc.y - 1] = distanceMatrix[tempLoc.x, tempLoc.y] + 1;
                         }
                     }
@@ -316,7 +358,8 @@ namespace WindowsGame1
                         neighbrType = warField.getField()[tempLoc.x, tempLoc.y + 1].type;
                         if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone"))
                         {
-                            q.Enqueue(warField.getField()[tempLoc.x, tempLoc.y + 1]);
+                            Location temp = warField.getField()[tempLoc.x, tempLoc.y + 1];
+                            q.enqueue(temp, heuristic(temp, dest.tankLoc));
                             distanceMatrix[tempLoc.x, tempLoc.y + 1] = distanceMatrix[tempLoc.x, tempLoc.y] + 1;
                         }
                     }
@@ -329,6 +372,49 @@ namespace WindowsGame1
 
         }
 
+        private int heuristic(Location src, Location dest) {
+            return (Math.Abs(src.x - dest.x) + Math.Abs(src.y - dest.y) + 1);
+        }
+
+
+
+    }
+
+    public class priorityLocationQueue {
+        private SortedDictionary<int, Queue<Location>> priorities;
+        public priorityLocationQueue() {
+            priorities = new SortedDictionary<int, Queue<Location>>();
+        }
+
+        public void enqueue(Location loc, int priority){
+            if (priority == (-1)) ;
+            else if (priorities.ContainsKey(priority))
+            {
+                priorities[priority].Enqueue(loc);
+            }
+            else 
+            {
+                priorities.Add(priority, new Queue<Location>());
+                priorities[priority].Enqueue(loc);
+            }
+        }
+
+        public Location dequeue() { 
+            if (priorities.Count==0)
+                return null;
+            else{
+                int min=priorities.Keys.Min();
+                Location temp=priorities[min].Dequeue();
+                if (priorities[min].Count == 0) {
+                    priorities.Remove(min);
+                }
+                return temp;
+            }
+        }
+
+        public int count() {
+            return priorities.Count;
+        }
     }
 
 }
