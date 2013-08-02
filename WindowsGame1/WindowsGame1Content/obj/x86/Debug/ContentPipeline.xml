@@ -1,21 +1,126 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
   <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>background.png</Source>
+      <Name>background</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\background.xnb</Output>
+      <Time>2013-07-29T09:26:31.3209359+05:30</Time>
+    </Item>
+    <Item>
+      <Source>down.png</Source>
+      <Name>down</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\down.xnb</Output>
+      <Time>2013-07-29T10:33:46.6607441+05:30</Time>
+    </Item>
+    <Item>
+      <Source>left.png</Source>
+      <Name>left</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\left.xnb</Output>
+      <Time>2013-07-29T10:33:46.6637443+05:30</Time>
+    </Item>
+    <Item>
+      <Source>right.png</Source>
+      <Name>right</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\right.xnb</Output>
+      <Time>2013-07-29T10:33:46.6677445+05:30</Time>
+    </Item>
+    <Item>
+      <Source>up.png</Source>
+      <Name>up</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\up.xnb</Output>
+      <Time>2013-07-29T10:33:46.6707447+05:30</Time>
+    </Item>
+    <Item>
+      <Source>stone.png</Source>
+      <Name>stone</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\stone.xnb</Output>
+      <Time>2013-07-29T12:04:46.9920572+05:30</Time>
+    </Item>
+    <Item>
+      <Source>brick.png</Source>
+      <Name>brick</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\brick.xnb</Output>
+      <Time>2013-07-29T12:26:31.3486622+05:30</Time>
+    </Item>
+    <Item>
+      <Source>water.png</Source>
+      <Name>water</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\water.xnb</Output>
+      <Time>2013-07-29T12:06:56.6744746+05:30</Time>
+    </Item>
+    <Item>
+      <Source>coins.png</Source>
+      <Name>coins</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\coins.xnb</Output>
+      <Time>2013-07-29T12:09:33.4244402+05:30</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>
       <TargetProfile>HiDef</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>C:\Users\Sampath\Documents\Visual Studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1Content\</RootDirectory>
-      <LoggerRootDirectory>C:\Users\Sampath\Documents\Visual Studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1\</LoggerRootDirectory>
-      <IntermediateDirectory>C:\Users\Sampath\Documents\Visual Studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1Content\obj\x86\Debug\</IntermediateDirectory>
-      <OutputDirectory>C:\Users\Sampath\Documents\Visual Studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\</OutputDirectory>
+      <RootDirectory>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1Content\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1Content\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Value>2010-08-23T12:41:18+05:30</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll</Key>
+        <Value>2010-08-23T12:41:18+05:30</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2010-08-23T12:41:18+05:30</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2010-08-23T12:41:18+05:30</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2010-08-23T12:41:18+05:30</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Value>2010-08-23T12:41:18+05:30</Value>
+      </Assembly>
+      <Assembly>
         <Key>C:\Windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
-        <Value>2013-04-09T12:19:42.9253262+05:30</Value>
+        <Value>2012-11-18T15:53:26.9350726+05:30</Value>
       </Assembly>
     </Assemblies>
   </Asset>

@@ -4,3 +4,41 @@ c:\users\sampath\documents\visual studio 2010\Projects\WindowsGame1\WindowsGame1
 c:\users\sampath\documents\visual studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 c:\users\sampath\documents\visual studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1\obj\x86\Debug\WindowsGame1.exe
 c:\users\sampath\documents\visual studio 2010\Projects\WindowsGame1\WindowsGame1\WindowsGame1\obj\x86\Debug\WindowsGame1.pdb
+E:\Acadamic\Semester 4\Programming challenge\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\WindowsGame1.exe
+E:\Acadamic\Semester 4\Programming challenge\Tank_Game-master\WindowsGame1\WindowsGame1\obj\x86\Debug\ResolveAssemblyReference.cache
+E:\Acadamic\Semester 4\Programming challenge\Tank_Game-master\WindowsGame1\WindowsGame1\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+E:\Acadamic\Semester 4\Programming challenge\Tank_Game-master\WindowsGame1\WindowsGame1\obj\x86\Debug\WindowsGame1.exe
+E:\Acadamic\Semester 4\Programming challenge\Tank_Game-master\WindowsGame1\WindowsGame1\obj\x86\Debug\WindowsGame1.pdb
+E:\Acadamic\Semester 4\Programming challenge\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\WindowsGame1.pdb
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\WindowsGame1.exe
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\WindowsGame1.pdb
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\obj\x86\Debug\WindowsGame1.exe
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\obj\x86\Debug\WindowsGame1.pdb
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\WindowsGame1.exe.config
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\background.xnb
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\down.xnb
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\left.xnb
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\right.xnb
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\up.xnb
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\stone.xnb
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\brick.xnb
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\water.xnb
+C:\Users\dell\Desktop\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\coins.xnb
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\background.xnb
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\down.xnb
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\left.xnb
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\right.xnb
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\up.xnb
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\stone.xnb
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\brick.xnb
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\water.xnb
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\coins.xnb
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\WindowsGame1.exe.config
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\WindowsGame1.exe
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\WindowsGame1.pdb
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\obj\x86\Debug\WindowsGame1.exe
+C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\obj\x86\Debug\WindowsGame1.pdb
