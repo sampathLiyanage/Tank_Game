@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Net.Sockets;
 using System.Net;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace WindowsGame1
 {
@@ -161,6 +162,7 @@ namespace WindowsGame1
         }
 
         //sending response to server
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void sendData(String msg)
         {
             //Opening the connection
@@ -184,7 +186,6 @@ namespace WindowsGame1
 
                     //writing to the port                
                     writer.Write(tempStr);
-                    writer.Flush();
                     System.Console.WriteLine("command send: " + msg + " thread " + Thread.CurrentThread.ManagedThreadId);
                     writer.Close();
                     this.stm.Close();

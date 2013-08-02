@@ -7,7 +7,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\background.xnb</Output>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\background.xnb</Output>
       <Time>2013-07-29T09:26:31.3209359+05:30</Time>
     </Item>
     <Item>
@@ -16,7 +16,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\down.xnb</Output>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\down.xnb</Output>
       <Time>2013-07-29T10:33:46.6607441+05:30</Time>
     </Item>
     <Item>
@@ -25,7 +25,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\left.xnb</Output>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\left.xnb</Output>
       <Time>2013-07-29T10:33:46.6637443+05:30</Time>
     </Item>
     <Item>
@@ -34,7 +34,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\right.xnb</Output>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\right.xnb</Output>
       <Time>2013-07-29T10:33:46.6677445+05:30</Time>
     </Item>
     <Item>
@@ -43,7 +43,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\up.xnb</Output>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\up.xnb</Output>
       <Time>2013-07-29T10:33:46.6707447+05:30</Time>
     </Item>
     <Item>
@@ -52,7 +52,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\stone.xnb</Output>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\stone.xnb</Output>
       <Time>2013-07-29T12:04:46.9920572+05:30</Time>
     </Item>
     <Item>
@@ -61,7 +61,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\brick.xnb</Output>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\brick.xnb</Output>
       <Time>2013-07-29T12:26:31.3486622+05:30</Time>
     </Item>
     <Item>
@@ -70,7 +70,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\water.xnb</Output>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\water.xnb</Output>
       <Time>2013-07-29T12:06:56.6744746+05:30</Time>
     </Item>
     <Item>
@@ -79,7 +79,7 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\coins.xnb</Output>
+      <Output>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\coins.xnb</Output>
       <Time>2013-07-29T12:09:33.4244402+05:30</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
@@ -88,10 +88,10 @@
       <TargetProfile>HiDef</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1Content\</RootDirectory>
-      <LoggerRootDirectory>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\</LoggerRootDirectory>
-      <IntermediateDirectory>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1Content\obj\x86\Debug\</IntermediateDirectory>
-      <OutputDirectory>C:\Users\dell\Desktop\tank game\Tank_Game-master - with recursive DFS\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\</OutputDirectory>
+      <RootDirectory>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1Content\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1Content\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>

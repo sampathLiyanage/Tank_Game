@@ -137,22 +137,7 @@ namespace WindowsGame1
                 {
                     if (wf.getField()[i, j].type.Equals("tank"))
                     {
-                        if (((Tank)wf.getField()[i, j]).direction == 0)
-                        {
-                            spriteBatch.Draw(tank_up, new Rectangle(i * (gameScreenSize / mapSize), j * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
-                        }
-                        else if (((Tank)wf.getField()[i, j]).direction == 1)
-                        {
-                            spriteBatch.Draw(tank_right, new Rectangle(i * (gameScreenSize / mapSize), j * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
-                        }
-                        else if (((Tank)wf.getField()[i, j]).direction == 2)
-                        {
-                            spriteBatch.Draw(tank_down, new Rectangle(i * (gameScreenSize / mapSize), j * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
-                        }
-                        else if (((Tank)wf.getField()[i, j]).direction == 3)
-                        {
-                            spriteBatch.Draw(tank_left, new Rectangle(i * (gameScreenSize / mapSize), j * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
-                        }
+                        
                     }
 
                     if (wf.getField()[i, j].type.Equals("brick"))
@@ -176,6 +161,28 @@ namespace WindowsGame1
                     }
                 }
             }
+
+           
+           foreach (KeyValuePair<String,Tank> t in wf.tanks){
+               if (t.Value.direction == 0)
+               {
+                   spriteBatch.Draw(tank_up, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+               }
+               else if (t.Value.direction == 1)
+               {
+                   spriteBatch.Draw(tank_right, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+               }
+               else if (t.Value.direction == 2)
+               {
+                   spriteBatch.Draw(tank_down, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+               }
+               else if (t.Value.direction == 3)
+               {
+                   spriteBatch.Draw(tank_left, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+               }
+               
+           }
+           
 
             spriteBatch.End();
 

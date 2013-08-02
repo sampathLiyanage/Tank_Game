@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Configuration;
+using System.Runtime.CompilerServices;
 
 namespace WindowsGame1
 {
@@ -20,14 +21,13 @@ namespace WindowsGame1
 
         private int mapSize;
         private WarField warField;
-        private Location myTank;
+        private Tank myTank;
         private Response response;
-        private bool pathFound;
-        private Coins followingCoins;
         private Thread listnerTrd;
         private Timer myTimer;
         private String bestCommand;
         private bool[,] checkedLocs;
+        private int[,] distanceMatrix;
 
         public Commandor(WarField wf)
         {
@@ -35,10 +35,11 @@ namespace WindowsGame1
             warField = wf;
             myTank = warField.getMyTank();
             response = Response.Instance;
-            pathFound = false;
             checkedLocs = new bool[mapSize, mapSize];
 
             bestCommand = "nothing";
+            distanceMatrix = new int[mapSize,mapSize];
+
 
             //setting timer for send responses to server after every second
             TimerCallback tcb = this.sendCommand;
@@ -47,6 +48,7 @@ namespace WindowsGame1
 
             //starting a thread to calculate the next best command
             listnerTrd = new Thread(new ThreadStart(this.act));
+            listnerTrd.Priority = ThreadPriority.Highest;
             listnerTrd.Start();
 
         }
@@ -63,269 +65,268 @@ namespace WindowsGame1
         {
             while (true)
             {
+                
+                if (myTank.newCoins) {
+                    int dst= distToTankIfNearest(myTank.target,myTank);
+                    if (dst != -1)
+                    {
+                        myTank.destToTarget = dst;
+                        myTank.targetLock = true;
+
+                        findLocationAndConfigPath(myTank.tankLoc, myTank.target);
+                    }
+                    myTank.newCoins = false;
+                }
                 bestCommand = getCommand();
             }
+            
         }
 
         //breadth first search to get next best command
         private String getCommand()
         {
-            if (((Tank)myTank).target != null && !(warField.getField())[((Tank)myTank).target.x, ((Tank)myTank).target.y].type.Equals("coins"))
+            if (myTank.target != null && !(warField.getField())[myTank.target.x, myTank.target.y].type.Equals("coins"))
             {
-                ((Tank)myTank).targetLock = false;
-                ((Tank)myTank).destToTarget = 1000;
+                myTank.targetLock = false;
+                myTank.target = null;
+                myTank.destToTarget = 1000;
             }
 
-            if (((Tank)myTank).targetLock && (warField.getField())[((Tank)myTank).target.x, ((Tank)myTank).target.y].type.Equals("coins"))
+        
+            for (int i = 0; i < mapSize; i++)
             {
+                for (int j = 0; j < mapSize; j++)
+                    checkedLocs[i, j] = false;
+            }
 
+            myTank.tankLoc.parentLoc = null;
+            myTank.tankLoc.distFromSrc = 0;
+            int distCount;
 
-                pathFound = false;
-                for (int i = 0; i < mapSize; i++)
-                {
-                    for (int j = 0; j < mapSize; j++)
-                        checkedLocs[i, j] = false;
-                }
-                myTank.parentLoc = null;
-                myTank.distFromSrc = 0;
-                checkedLocs[myTank.x, myTank.y] = true;
-                Queue<Location> q = new Queue<Location>();
-                q.Enqueue(myTank);
-                configPath(q, ((Tank)myTank).target);
-
-                if (pathFound && followingCoins.parentLoc != null)
-                {
-                    Location loc;
-
-                    int distCount = 0;
-                    loc = followingCoins;
-                    while (loc.parentLoc.parentLoc != null)
-                    {
-                        loc = loc.parentLoc;
-                        distCount++;
-                    }
-
-                    ((Tank)myTank).destToTarget = distCount;
-                    System.Console.WriteLine("target is " + ((Tank)myTank).target.x + " " + ((Tank)myTank).target.y + "; distance is " + distCount);
-                    return ((Tank)myTank).getCommand(loc.x, loc.y);
-                }
-
-                else
-                {
-                    return "nothing";
-                }
+            Location targetCoins;
+            if (myTank.targetLock && (warField.getField())[myTank.target.x, myTank.target.y].type.Equals("coins"))
+            {
+                targetCoins = findLocationAndConfigPath(myTank.tankLoc, myTank.target);
             }
             else
             {
-                pathFound = false;
-                for (int i = 0; i < mapSize; i++)
-                {
-                    for (int j = 0; j < mapSize; j++)
-                        checkedLocs[i, j] = false;
-                }
-                myTank.parentLoc = null;
-                myTank.distFromSrc = 0;
-                checkedLocs[myTank.x, myTank.y] = true;
-                Queue<Location> q = new Queue<Location>();
-                q.Enqueue(myTank);
-                configPath(q);
-
-                if (pathFound && followingCoins.parentLoc != null)
-                {
-                    Location loc;
-                    loc = followingCoins;
-                    while (loc.parentLoc.parentLoc != null)
-                    {
-                        loc = loc.parentLoc;
-                    }
-
-                    return ((Tank)myTank).getCommand(loc.x, loc.y);
-                }
-
-                else
-                {
-                    return "nothing";
-                }
+                targetCoins = findLocationAndConfigPath(myTank.tankLoc, "coins") ;
             }
+
+            Location tempLoc;
+            if (targetCoins != null)
+            {
+                distCount = 0;
+                tempLoc = targetCoins;
+                while (tempLoc.parentLoc!=null && tempLoc.parentLoc != myTank.tankLoc)
+                {
+                    tempLoc = tempLoc.parentLoc;
+                    distCount++;
+                }
+                myTank.destToTarget = distCount;
+                return myTank.getCommand(tempLoc.x, tempLoc.y);
+            }
+
+            else
+            {
+                return "nothing";
+            }
+            
         }
-        //creating a path
-        private void configPath(Queue<Location> q, Location loc)
+     
+
+
+        /*
+         * 
+         * if input type is string, compare the destination to type attribute of the location
+         * if input type is Location, compare the destination to Location
+         * 
+         */
+        
+        private Location findLocationAndConfigPath(Location src, Object objTocompare)
         {
             String neighbrType;
+            Location tempLoc;
             Location tempLoc1 = null;
             Location tempLoc2 = null;
             Location tempLoc3 = null;
             Location tempLoc4 = null;
-            if (!pathFound && q.Count != 0)
+
+            for (int i = 0; i < mapSize; i++)
             {
-                Location src = q.Dequeue();
-                if (src == loc)
-                {
-                    followingCoins = (Coins)src;
-                    pathFound = true;
-                }
-
-                else
-                {
-
-                    if (src.x > 0)
-                    {
-
-                        tempLoc1 = warField.getField()[src.x - 1, src.y];
-                        if (!checkedLocs[tempLoc1.x, tempLoc1.y])
-                        {
-                            neighbrType = tempLoc1.type;
-                            if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone") && !neighbrType.Equals("tank"))
-                            {
-                                tempLoc1.parentLoc = src;
-                                tempLoc1.distFromSrc = src.distFromSrc + 1;
-                                checkedLocs[tempLoc1.x, tempLoc1.y] = true;
-                                q.Enqueue(tempLoc1);
-                            }
-                        }
-                    }
-
-                    if (src.x < mapSize - 1)
-                    {
-                        tempLoc2 = warField.getField()[src.x + 1, src.y];
-                        if (!checkedLocs[tempLoc2.x, tempLoc2.y])
-                        {
-                            neighbrType = tempLoc2.type;
-                            if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone") && !neighbrType.Equals("tank"))
-                            {
-                                tempLoc2.parentLoc = src;
-                                tempLoc2.distFromSrc = src.distFromSrc + 1;
-                                checkedLocs[tempLoc2.x, tempLoc2.y] = true;
-                                q.Enqueue(tempLoc2);
-                            }
-                        }
-                    }
-
-                    if (src.y > 0)
-                    {
-                        tempLoc3 = warField.getField()[src.x, src.y - 1];
-                        if (!checkedLocs[tempLoc3.x, tempLoc3.y])
-                        {
-                            neighbrType = tempLoc3.type;
-                            if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone") && !neighbrType.Equals("tank"))
-                            {
-                                tempLoc3.parentLoc = src;
-                                tempLoc3.distFromSrc = src.distFromSrc + 1;
-                                checkedLocs[tempLoc3.x, tempLoc3.y] = true;
-                                q.Enqueue(tempLoc3);
-                            }
-                        }
-                    }
-
-                    if (src.y < mapSize - 1)
-                    {
-                        tempLoc4 = warField.getField()[src.x, src.y + 1];
-                        if (!checkedLocs[tempLoc4.x, tempLoc4.y])
-                        {
-                            neighbrType = tempLoc4.type;
-                            if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone") && !neighbrType.Equals("tank"))
-                            {
-                                tempLoc4.parentLoc = src;
-                                tempLoc4.distFromSrc = src.distFromSrc + 1;
-                                checkedLocs[tempLoc4.x, tempLoc4.y] = true;
-                                q.Enqueue(tempLoc4);
-                            }
-                        }
-                    }
-                    configPath(q);
-
-                }
+                for (int j = 0; j < mapSize; j++)
+                    checkedLocs[i, j] = false;
             }
+
+            Queue<Location> q = new Queue<Location>();
+            q.Enqueue(src);
+            checkedLocs[src.x, src.y] = true;
+            while (q.Count != 0)
+            {
+                tempLoc = q.Dequeue();
+
+                if (objTocompare.GetType()==typeof(String))
+                {
+                    if (tempLoc.type.Equals("coins"))
+                    {
+                        return tempLoc;
+                    }
+                }
+
+                else if (objTocompare.GetType()==typeof(Coins))
+                {
+                     if (tempLoc==objTocompare)
+                        {
+                            return tempLoc;
+                        }
+                }
+            
+                if (tempLoc.x > 0)
+                {
+
+                    tempLoc1 = warField.getField()[tempLoc.x - 1, tempLoc.y];
+                    if (!checkedLocs[tempLoc1.x, tempLoc1.y])
+                    {
+                        neighbrType = tempLoc1.type;
+                        if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone") && !neighbrType.Equals("tank"))
+                        {
+                            tempLoc1.parentLoc = tempLoc;
+                            tempLoc1.distFromSrc = tempLoc.distFromSrc + 1;
+                            checkedLocs[tempLoc1.x, tempLoc1.y] = true;
+                            q.Enqueue(tempLoc1);
+                        }
+                    }
+                }
+
+                if (tempLoc.x < (mapSize - 1))
+                {
+                    tempLoc2 = warField.getField()[tempLoc.x + 1, tempLoc.y];
+                    if (!checkedLocs[tempLoc2.x, tempLoc2.y])
+                    {
+                        neighbrType = tempLoc2.type;
+                        if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone") && !neighbrType.Equals("tank"))
+                        {
+                            tempLoc2.parentLoc = tempLoc;
+                            tempLoc2.distFromSrc = tempLoc.distFromSrc + 1;
+                            checkedLocs[tempLoc2.x, tempLoc2.y] = true;
+                            q.Enqueue(tempLoc2);
+                        }
+                    }
+                }
+
+                if (tempLoc.y > 0)
+                {
+                    tempLoc3 = warField.getField()[tempLoc.x, tempLoc.y - 1];
+                    if (!checkedLocs[tempLoc3.x, tempLoc3.y])
+                    {
+                        neighbrType = tempLoc3.type;
+                        if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone") && !neighbrType.Equals("tank"))
+                        {
+                            tempLoc3.parentLoc = tempLoc;
+                            tempLoc3.distFromSrc = tempLoc.distFromSrc + 1;
+                            checkedLocs[tempLoc3.x, tempLoc3.y] = true;
+                            q.Enqueue(tempLoc3);
+                        }
+                    }
+                }
+
+                if (tempLoc.y < (mapSize - 1))
+                {
+                    tempLoc4 = warField.getField()[tempLoc.x, tempLoc.y + 1];
+                    if (!checkedLocs[tempLoc4.x, tempLoc4.y])
+                    {
+                        neighbrType = tempLoc4.type;
+                        if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone") && !neighbrType.Equals("tank"))
+                        {
+                            tempLoc4.parentLoc = tempLoc;
+                            tempLoc4.distFromSrc = tempLoc.distFromSrc + 1;
+                            checkedLocs[tempLoc4.x, tempLoc4.y] = true;
+                            q.Enqueue(tempLoc4);
+                        }
+                    }
+                }
+
+            }
+
+            return null;
         }
 
-        //creating a path
-        private void configPath(Queue<Location> q)
+        private int distToTankIfNearest(Location src, Tank dest)
         {
-            String neighbrType;
-            Location tempLoc1 = null;
-            Location tempLoc2 = null;
-            Location tempLoc3 = null;
-            Location tempLoc4 = null;
-            if (!pathFound && q.Count != 0)
+            Location tempLoc;
+            for (int i = 0; i < mapSize; i++)
             {
-                Location src = q.Dequeue();
-                if (src.type.Equals("coins"))
+                for (int j = 0; j < mapSize; j++)
+                    distanceMatrix[i, j] = -1;
+            }
+
+            Queue<Location> q = new Queue<Location>();
+            q.Enqueue(src);
+            distanceMatrix[src.x, src.y] = 0;
+            while (q.Count != 0)
+            {
+                tempLoc = q.Dequeue();
+                if (tempLoc.type.Equals("tank") || distanceMatrix[tempLoc.x, tempLoc.y] >= dest.destToTarget)
                 {
-                    followingCoins = (Coins)src;
-                    pathFound = true;
+                    if (tempLoc == dest.tankLoc)
+                    {
+                        return distanceMatrix[tempLoc.x, tempLoc.y];
+                    }
+                    else
+                    {
+                        return -1;
+                    }
                 }
 
                 else
                 {
-
-                    if (src.x > 0)
+                    String neighbrType;
+                    if (tempLoc.x > 0 && -1 == distanceMatrix[tempLoc.x - 1, tempLoc.y])
                     {
-
-                        tempLoc1 = warField.getField()[src.x - 1, src.y];
-                        if (!checkedLocs[tempLoc1.x, tempLoc1.y])
+                        neighbrType = warField.getField()[tempLoc.x - 1, tempLoc.y].type;
+                        if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone"))
                         {
-                            neighbrType = tempLoc1.type;
-                            if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone") && !neighbrType.Equals("tank"))
-                            {
-                                tempLoc1.parentLoc = src;
-                                tempLoc1.distFromSrc = src.distFromSrc + 1;
-                                checkedLocs[tempLoc1.x, tempLoc1.y] = true;
-                                q.Enqueue(tempLoc1);
-                            }
+                            q.Enqueue(warField.getField()[tempLoc.x - 1, tempLoc.y]);
+                            distanceMatrix[tempLoc.x - 1, tempLoc.y] = distanceMatrix[tempLoc.x, tempLoc.y] + 1;
                         }
                     }
 
-                    if (src.x < mapSize - 1)
+                    if (tempLoc.x < (mapSize - 1) && -1 == distanceMatrix[tempLoc.x + 1, tempLoc.y])
                     {
-                        tempLoc2 = warField.getField()[src.x + 1, src.y];
-                        if (!checkedLocs[tempLoc2.x, tempLoc2.y])
+                        neighbrType = warField.getField()[tempLoc.x + 1, tempLoc.y].type;
+                        if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone"))
                         {
-                            neighbrType = tempLoc2.type;
-                            if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone") && !neighbrType.Equals("tank"))
-                            {
-                                tempLoc2.parentLoc = src;
-                                tempLoc2.distFromSrc = src.distFromSrc + 1;
-                                checkedLocs[tempLoc2.x, tempLoc2.y] = true;
-                                q.Enqueue(tempLoc2);
-                            }
+                            q.Enqueue(warField.getField()[tempLoc.x + 1, tempLoc.y]);
+                            distanceMatrix[tempLoc.x + 1, tempLoc.y] = distanceMatrix[tempLoc.x, tempLoc.y] + 1;
                         }
                     }
 
-                    if (src.y > 0)
+                    if (tempLoc.y > 0 && -1 == distanceMatrix[tempLoc.x, tempLoc.y - 1])
                     {
-                        tempLoc3 = warField.getField()[src.x, src.y - 1];
-                        if (!checkedLocs[tempLoc3.x, tempLoc3.y])
+                        neighbrType = warField.getField()[tempLoc.x, tempLoc.y - 1].type;
+                        if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone"))
                         {
-                            neighbrType = tempLoc3.type;
-                            if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone") && !neighbrType.Equals("tank"))
-                            {
-                                tempLoc3.parentLoc = src;
-                                tempLoc3.distFromSrc = src.distFromSrc + 1;
-                                checkedLocs[tempLoc3.x, tempLoc3.y] = true;
-                                q.Enqueue(tempLoc3);
-                            }
+                            q.Enqueue(warField.getField()[tempLoc.x, tempLoc.y - 1]);
+                            distanceMatrix[tempLoc.x, tempLoc.y - 1] = distanceMatrix[tempLoc.x, tempLoc.y] + 1;
                         }
                     }
 
-                    if (src.y < mapSize - 1)
+                    if (tempLoc.y < (mapSize - 1) && -1 == distanceMatrix[tempLoc.x, tempLoc.y + 1])
                     {
-                        tempLoc4 = warField.getField()[src.x, src.y + 1];
-                        if (!checkedLocs[tempLoc4.x, tempLoc4.y])
+                        neighbrType = warField.getField()[tempLoc.x, tempLoc.y + 1].type;
+                        if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone"))
                         {
-                            neighbrType = tempLoc4.type;
-                            if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone") && !neighbrType.Equals("tank"))
-                            {
-                                tempLoc4.parentLoc = src;
-                                tempLoc4.distFromSrc = src.distFromSrc + 1;
-                                checkedLocs[tempLoc4.x, tempLoc4.y] = true;
-                                q.Enqueue(tempLoc4);
-                            }
+                            q.Enqueue(warField.getField()[tempLoc.x, tempLoc.y + 1]);
+                            distanceMatrix[tempLoc.x, tempLoc.y + 1] = distanceMatrix[tempLoc.x, tempLoc.y] + 1;
                         }
                     }
-                    configPath(q);
 
                 }
+
             }
+
+            return -1;
+
         }
 
     }

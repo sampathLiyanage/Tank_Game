@@ -41,7 +41,7 @@ namespace WindowsGame1
     }
 
     //represents a tank
-    public class Tank : Location
+    public class Tank
     {
         public int direction; //0=N, 1=E, 2=S, 3=W
         private bool whetherShot;
@@ -52,48 +52,51 @@ namespace WindowsGame1
         public bool targetLock;
         public int destToTarget;
         public Coins target;
+        public bool newCoins;
+        public Location tankLoc;
 
         public Tank(String nm, int x, int y, Location[,] wf)
-            : base("tank", x, y)
         {
             warfield = wf;
+            tankLoc = warfield[x, y];
+            warfield[x, y].type = "tank";
             name = nm;
             targetLock = false;
             destToTarget = 1000;
+            newCoins = false;
         }
 
         //set location of the tank
         public void Set(int locX, int locY, int dir, bool ws, int h, int c, int p)
         {
-            if (initiated == true)
+            if (initiated)
             {
-                warfield[x, y] = new EmptyLoc(x, y, warfield);
+                tankLoc.type="empty";
             }
             else
                 initiated = true;
 
-            x = locX;
-            y = locY;
-
+            
+            tankLoc = warfield[locX, locY];
+            tankLoc.type = "tank";
             direction = dir;
             whetherShot = ws;
             helth = h;
             coins = c;
             points = p;
-            warfield[x, y] = this;
         }
 
         //input: next location cordinate calculated by game engine (supposed to be an adjesent location)
         //output: the command or string "nothing"
         public String getCommand(int crdX, int crdY)
         {
-            if (crdY == y + 1 && crdX == x)
+            if (crdY == tankLoc.y + 1 && crdX == tankLoc.x)
                 return "DOWN#";
-            else if ((crdY == y - 1) && crdX == x)
+            else if ((crdY == tankLoc.y - 1) && crdX == tankLoc.x)
                 return "UP#";
-            else if ((crdX == x + 1) && crdY == y)
+            else if ((crdX == tankLoc.x + 1) && crdY == tankLoc.y)
                 return "RIGHT#";
-            else if ((crdX == x - 1) && crdY == y)
+            else if ((crdX == tankLoc.x - 1) && crdY == tankLoc.y)
                 return "LEFT#";
             else
                 return "nothing";
@@ -101,17 +104,15 @@ namespace WindowsGame1
     }
 
     //represent coins
-    public class Coins
+    public class Coins : Location
     {
         private int mapSize;
         int value;
         DateTime startedTime;
         int time;
         private Location[,] warfield;
-        public Location;
         public bool taken;
         public bool expired;
-        int[,] checkedLocs;
         public Coins(int x, int y, int v, int t, Location[,] wf, Tank myTank)
             : base("coins", x, y)
         {
@@ -124,16 +125,8 @@ namespace WindowsGame1
             wf[x, y] = this;
             warfield = wf;
 
-
-
-            checkedLocs = new int[mapSize, mapSize];
-            int dst = calcDistance(myTank);
-            if (dst != -1)
-            {
-                myTank.destToTarget = dst;
-                myTank.targetLock = true;
-                myTank.target = this;
-            }
+            myTank.target = this;
+            myTank.newCoins = true;
 
         }
 
@@ -147,83 +140,7 @@ namespace WindowsGame1
         }
 
 
-        private int calcDistance(Location dest)
-        {
-            Location tempLoc;
-            for (int i = 0; i < mapSize; i++)
-            {
-                for (int j = 0; j < mapSize; j++)
-                    checkedLocs[i, j] = -1;
-            }
-
-            Queue<Location> q = new Queue<Location>();
-            q.Enqueue(this);
-            checkedLocs[this.x, this.y] = 0;
-            while (q.Count != 0)
-            {
-                tempLoc = q.Dequeue();
-                if (tempLoc.type.Equals("tank") || checkedLocs[tempLoc.x, tempLoc.y] >= ((Tank)dest).destToTarget)
-                {
-                    if (tempLoc == dest)
-                    {
-                        return checkedLocs[tempLoc.x, tempLoc.y];
-                    }
-                    else
-                    {
-                        return -1;
-                    }
-                }
-
-                else
-                {
-                    String neighbrType;
-                    if (tempLoc.x > 0 && -1 == checkedLocs[tempLoc.x - 1, tempLoc.y])
-                    {
-                        neighbrType = warfield[tempLoc.x - 1, tempLoc.y].type;
-                        if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone"))
-                        {
-                            q.Enqueue(warfield[tempLoc.x - 1, tempLoc.y]);
-                            checkedLocs[tempLoc.x - 1, tempLoc.y] = checkedLocs[tempLoc.x, tempLoc.y] + 1;
-                        }
-                    }
-
-                    if (tempLoc.x < mapSize - 1 && -1 == checkedLocs[tempLoc.x + 1, tempLoc.y])
-                    {
-                        neighbrType = warfield[tempLoc.x + 1, tempLoc.y].type;
-                        if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone"))
-                        {
-                            q.Enqueue(warfield[tempLoc.x + 1, tempLoc.y]);
-                            checkedLocs[tempLoc.x + 1, tempLoc.y] = checkedLocs[tempLoc.x, tempLoc.y] + 1;
-                        }
-                    }
-
-                    if (tempLoc.y > 0 && -1 == checkedLocs[tempLoc.x, tempLoc.y - 1])
-                    {
-                        neighbrType = warfield[tempLoc.x, tempLoc.y - 1].type;
-                        if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone"))
-                        {
-                            q.Enqueue(warfield[tempLoc.x, tempLoc.y - 1]);
-                            checkedLocs[tempLoc.x, tempLoc.y - 1] = checkedLocs[tempLoc.x, tempLoc.y] + 1;
-                        }
-                    }
-
-                    if (tempLoc.y < mapSize - 1 && -1 == checkedLocs[tempLoc.x, tempLoc.y + 1])
-                    {
-                        neighbrType = warfield[tempLoc.x, tempLoc.y + 1].type;
-                        if (!neighbrType.Equals("water") && !neighbrType.Equals("brick") && !neighbrType.Equals("stone"))
-                        {
-                            q.Enqueue(warfield[tempLoc.x, tempLoc.y + 1]);
-                            checkedLocs[tempLoc.x, tempLoc.y + 1] = checkedLocs[tempLoc.x, tempLoc.y] + 1;
-                        }
-                    }
-
-                }
-
-            }
-
-            return -1;
-
-        }
+        
     }
 
     //represents war field (game environment)
@@ -233,13 +150,13 @@ namespace WindowsGame1
         private int mapSize;
 
         private Location[,] wfield;
-        public Hashtable tanks;
+        public Dictionary<String,Tank> tanks;
         private List<Coins> coinList;
         private Listner listner;
         private Response response;
         private Char[] dataIn;
         private String mytankName;
-        private bool initiated;
+        public bool initiated;
 
         static WarField instance = null;
         static readonly object padlock = new object();
@@ -255,7 +172,7 @@ namespace WindowsGame1
                     new EmptyLoc(i, j, wfield);
                 }
             }
-            tanks = new Hashtable();
+            tanks = new Dictionary<String, Tank>();
             coinList = new List<Coins>();
             listner = Listner.Instance;
             listner.start(this);
@@ -342,15 +259,7 @@ namespace WindowsGame1
                 this.newWater(Convert.ToInt16(operands_14i[0]), Convert.ToInt16(operands_14i[1]));
             }
 
-            for (int i = 0; i < mapSize; i++)
-            {
-                for (int j = 0; j < mapSize; j++)
-                {
-                    System.Console.Write(this.getField()[i, j].type);
-                    System.Console.Write(" ");
-                }
-                System.Console.WriteLine();
-            }
+         
 
             initiated = true;
         }
@@ -390,18 +299,6 @@ namespace WindowsGame1
 
 
             this.update(); //updating coins and life packs
-
-
-            //printing map on console
-            for (int i = 0; i < mapSize; i++)
-            {
-                for (int j = 0; j < mapSize; j++)
-                {
-                    System.Console.Write(this.getField()[i, j].type);
-                    System.Console.Write(" ");
-                }
-                System.Console.WriteLine();
-            }
 
 
         }
@@ -540,9 +437,9 @@ namespace WindowsGame1
 
 
         //functions to be called by game engine
-        public Location getTank(String nm)
+        public Tank getTank(String nm)
         {
-            return (Location)tanks[nm];
+            return (Tank)tanks[nm];
         }
 
         public List<Coins> getCoins()
@@ -555,10 +452,10 @@ namespace WindowsGame1
             return wfield;
         }
 
-        public Location getMyTank()
+        public Tank getMyTank()
         {
             while (!initiated) ;
-            return (Location)tanks[mytankName];
+            return (Tank)tanks[mytankName];
         }
     }
 
