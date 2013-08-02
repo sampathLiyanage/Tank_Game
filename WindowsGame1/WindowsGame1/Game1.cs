@@ -56,7 +56,7 @@ namespace WindowsGame1
             gameScreenSize = Convert.ToInt16(ConfigurationSettings.AppSettings.Get("screenSize")); 
 
            wf = WarField.Instance; //prepair game model, join game
-             cmdr = new Commandor(wf);   //start game
+             cmdr = Commandor.getInstant(wf);   //start game
 
             
 
