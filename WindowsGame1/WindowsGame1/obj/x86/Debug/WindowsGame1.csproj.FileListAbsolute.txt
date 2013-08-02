@@ -42,3 +42,19 @@ C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\obj\x
 C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\obj\x86\Debug\WindowsGame1.exe
 C:\Users\dell\Desktop\tank game\Tank_Game-master\WindowsGame1\WindowsGame1\obj\x86\Debug\WindowsGame1.pdb
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\background.xnb
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\down.xnb
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\left.xnb
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\right.xnb
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\up.xnb
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\stone.xnb
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\brick.xnb
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\water.xnb
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\bin\x86\Debug\Content\coins.xnb
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\bin\x86\Debug\WindowsGame1.exe.config
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\bin\x86\Debug\WindowsGame1.exe
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\bin\x86\Debug\WindowsGame1.pdb
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\obj\x86\Debug\ResolveAssemblyReference.cache
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\obj\x86\Debug\WindowsGame1.exe
+E:\Dev\Tank_Game\WindowsGame1\WindowsGame1\obj\x86\Debug\WindowsGame1.pdb

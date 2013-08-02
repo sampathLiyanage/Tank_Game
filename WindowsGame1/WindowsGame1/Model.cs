@@ -16,7 +16,7 @@ namespace WindowsGame1
     */
 
     //represent a location (ie: 10*10 locations in the game)
-    public abstract class Location
+    public class Location
     {
         public int safeLevel;
         public int x, y;
@@ -134,7 +134,6 @@ namespace WindowsGame1
             coinLoc = wf[x, y];
             coinLoc.type = "coins";
             myTank.target = this;
-            myTank.newCoins = true;
 
         }
 
