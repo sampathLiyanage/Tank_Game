@@ -18,15 +18,17 @@ namespace WindowsGame1
     //represent a location (ie: 10*10 locations in the game)
     public abstract class Location
     {
+        public int safeLevel;
         public int x, y;
         public Location parentLoc;
         public int distFromSrc;
         public String type;
+        private static int mapSize =Convert.ToInt16(ConfigurationSettings.AppSettings.Get("ServerPort"));
         public Location(String str, int X, int Y)
         {
             type = str;
             x = X;
-            y = Y;
+            y = Y; //max safe Level
         }
     }
 
@@ -54,6 +56,7 @@ namespace WindowsGame1
         public Coins target;
         public bool newCoins;
         public Location tankLoc;
+        private bool isMyTank;
 
         public Tank(String nm, int x, int y, Location[,] wf)
         {
@@ -64,8 +67,12 @@ namespace WindowsGame1
             targetLock = false;
             destToTarget = 1000;
             newCoins = false;
+            isMyTank = false;
         }
 
+        public void makeMyTank(){
+            isMyTank=true;
+        }
         //set location of the tank
         public void Set(int locX, int locY, int dir, bool ws, int h, int c, int p)
         {
@@ -86,6 +93,7 @@ namespace WindowsGame1
             points = p;
         }
 
+        
         //input: next location cordinate calculated by game engine (supposed to be an adjesent location)
         //output: the command or string "nothing"
         public String getCommand(int crdX, int crdY)
@@ -238,6 +246,7 @@ namespace WindowsGame1
 
             mytankName = operands_1[1];
             this.newTank(operands_1[1]);
+            getTank(mytankName).makeMyTank();
             string[] operands_12 = Regex.Split(operands_1[2], ";");
             for (int i = 0; i < operands_12.Length; i++)
             {
@@ -300,8 +309,6 @@ namespace WindowsGame1
 
 
             this.update(); //updating coins and life packs
-
-
         }
 
         //update coins according to the server responses
@@ -318,6 +325,9 @@ namespace WindowsGame1
             int vl = Convert.ToInt32(operands_1[3]);
             this.newCoins(X, Y, vl, lt);
         }
+
+
+       
 
         //represents stone
         private class Stone : Location

@@ -92,7 +92,19 @@ namespace WindowsGame1
 
         //breadth first search to get next best command
         private String getCommand()
-        {
+        {////////////////////////////////////////////////
+            setLocDangerLevels();
+            for (int i = 0; i < mapSize; i++)
+            {
+                for (int j = 0; j < mapSize; j++)
+                {
+                    System.Console.Write(warField.getField()[i, j].safeLevel +"-" +warField.getField()[i, j].type+ "  ");
+
+                }
+                System.Console.WriteLine();
+            }
+            System.Console.WriteLine();
+
             if (myTank.target != null && !(warField.getField())[myTank.target.coinLoc.x, myTank.target.coinLoc.y].type.Equals("coins") && brainLevelToFindCoins==2)
             {
                 myTank.targetLock = false;
@@ -140,8 +152,106 @@ namespace WindowsGame1
             }
             
         }
-     
 
+        //update location damage levels
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private void setLocDangerLevels()
+        {
+            Location temp;
+            int x, y, dir, safeLevel;
+            Tank tank;
+            //reset location safe levels
+            for (int i = 0; i < mapSize; i++)
+            {
+                for (int j = 0; j < mapSize; j++)
+                {
+                    temp = warField.getField()[i, j];
+                    if (temp.type == "empty")
+                    {
+                        temp.safeLevel = mapSize;
+                    }
+
+                }
+            }
+
+            //set location safe levels
+
+            System.Console.WriteLine("no Of Tanks" + warField.tanks.Count);
+            foreach (KeyValuePair<String, Tank> t in warField.tanks)
+            {
+                tank = t.Value;
+                dir = tank.direction;
+                x = tank.tankLoc.x;
+                y = tank.tankLoc.y;
+                safeLevel = 0;
+                if (tank == myTank)
+                    continue;
+                else if (dir == 0 && y!=0)
+                {
+                    for (int i = (y-1); i > 0; i--)
+                    {
+                        safeLevel++;
+                        if (warField.getField()[x, i].type != "empty")
+                        {
+                            break;
+                        }
+                        else if (warField.getField()[x, i].safeLevel <= safeLevel)
+                        {
+                            continue;
+                        }
+                        warField.getField()[x, i].safeLevel = safeLevel;
+                    }
+                }
+                else if (dir == 1 && x!=mapSize)
+                {
+                    for (int i = (x+1); i < mapSize; i++)
+                    {
+                        safeLevel++;
+                        if (warField.getField()[i, y].type != "empty")
+                        {
+                            break;
+                        }
+                        else if (warField.getField()[i, y].safeLevel <= safeLevel)
+                        {
+                            continue;
+                        }
+                        warField.getField()[i, y].safeLevel = safeLevel;
+                    }
+                }
+                else if (dir == 2 && y!=mapSize)
+                {
+                    for (int i = (y+1); i < mapSize; i++)
+                    {
+                        safeLevel++;
+                        if (warField.getField()[x, i].type != "empty")
+                        {
+                            break;
+                        }
+                        else if (warField.getField()[x, i].safeLevel <= safeLevel)
+                        {
+                            continue;
+                        }
+                        warField.getField()[x, i].safeLevel = safeLevel;
+                    }
+                }
+                else if (dir == 3 && x!=0)
+                {
+                    for (int i = (x-1); i > 0; i--)
+                    {
+                        safeLevel++;
+                        if (warField.getField()[i, y].type != "empty")
+                        {
+                            break;
+                        }
+                        else if (warField.getField()[i, y].safeLevel <= safeLevel)
+                        {
+                            continue;
+                        }
+                        warField.getField()[i, y].safeLevel = safeLevel;
+                    }
+                }
+            }
+        }
 
         /*
          * 
