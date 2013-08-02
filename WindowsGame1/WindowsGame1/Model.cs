@@ -104,7 +104,7 @@ namespace WindowsGame1
     }
 
     //represent coins
-    public class Coins : Location
+    public class Coins
     {
         private int mapSize;
         int value;
@@ -113,8 +113,8 @@ namespace WindowsGame1
         private Location[,] warfield;
         public bool taken;
         public bool expired;
+        public Location coinLoc;
         public Coins(int x, int y, int v, int t, Location[,] wf, Tank myTank)
-            : base("coins", x, y)
         {
             mapSize = Convert.ToInt16(ConfigurationSettings.AppSettings.Get("MapSize"));
             value = v;
@@ -122,9 +122,9 @@ namespace WindowsGame1
             expired = false;
             startedTime = DateTime.Now;
             time = t;
-            wf[x, y] = this;
             warfield = wf;
-
+            coinLoc = wf[x, y];
+            coinLoc.type = "coins";
             myTank.target = this;
             myTank.newCoins = true;
 
@@ -416,7 +416,7 @@ namespace WindowsGame1
                 if (c.isExpired())
                 {
                     c.expired = true;
-                    new EmptyLoc(c.x, c.y, wfield);
+                    c.coinLoc.type="empty";
                 }
                 else
                     newCList.Add(c);

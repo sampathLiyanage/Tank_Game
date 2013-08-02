@@ -67,7 +67,7 @@ namespace WindowsGame1
             {
                 
                 if (myTank.newCoins) {
-                    int dst= distToTankIfNearest(myTank.target,myTank);
+                    int dst= distToTankIfNearest(myTank.target.coinLoc,myTank);
                     if (dst != -1)
                     {
                         myTank.destToTarget = dst;
@@ -85,7 +85,7 @@ namespace WindowsGame1
         //breadth first search to get next best command
         private String getCommand()
         {
-            if (myTank.target != null && !(warField.getField())[myTank.target.x, myTank.target.y].type.Equals("coins"))
+            if (myTank.target != null && !(warField.getField())[myTank.target.coinLoc.x, myTank.target.coinLoc.y].type.Equals("coins"))
             {
                 myTank.targetLock = false;
                 myTank.target = null;
@@ -104,9 +104,9 @@ namespace WindowsGame1
             int distCount;
 
             Location targetCoins;
-            if (myTank.targetLock && (warField.getField())[myTank.target.x, myTank.target.y].type.Equals("coins"))
+            if (myTank.targetLock && (warField.getField())[myTank.target.coinLoc.x, myTank.target.coinLoc.y].type.Equals("coins"))
             {
-                targetCoins = findLocationAndConfigPath(myTank.tankLoc, myTank.target);
+                targetCoins = findLocationAndConfigPath(myTank.tankLoc, myTank.target.coinLoc);
             }
             else
             {
@@ -173,7 +173,7 @@ namespace WindowsGame1
                     }
                 }
 
-                else if (objTocompare.GetType()==typeof(Coins))
+                else if (objTocompare.GetType()==typeof(EmptyLoc))
                 {
                      if (tempLoc==objTocompare)
                         {
