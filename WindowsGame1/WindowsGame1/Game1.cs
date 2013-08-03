@@ -30,11 +30,15 @@ namespace WindowsGame1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         GraphicsDevice device;
-        Texture2D backgroundTexture,tank_up,tank_down,tank_left,tank_right,coins,brick,stone,water;
+        Texture2D backgroundTexture1, backgroundTexture2, enemyUp, enemyDown, enemyLeft, enemyRight, meUp, meDown, meLeft, meRight, coins, brick, stone, water, lifePack;
         int screenWidth;
         int screenHeight;
         int gameScreenSize;
-        
+        Viewport vpRite;               //left side, main view
+        Viewport vpLeft;               //right side, tile view
+        Viewport separatorViewport;    //line between the 2 views
+        Viewport defaultViewPort;
+        SpriteFont font;
 
         public Game1()
         {
@@ -58,12 +62,12 @@ namespace WindowsGame1
            wf = WarField.Instance; //prepair game model, join game
              cmdr = Commandor.getInstant(wf);   //start game
 
-            
 
-            
-            graphics.PreferredBackBufferWidth = gameScreenSize;
-            graphics.PreferredBackBufferHeight = gameScreenSize;
-            graphics.IsFullScreen = false;
+
+
+             graphics.PreferredBackBufferWidth = gameScreenSize + 200;
+             graphics.PreferredBackBufferHeight = gameScreenSize;
+             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
             Window.Title = "Tank-Game";
             base.Initialize();
@@ -78,16 +82,25 @@ namespace WindowsGame1
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             device = graphics.GraphicsDevice;
-            backgroundTexture = Content.Load<Texture2D>(@"background");
+            backgroundTexture1 = Content.Load<Texture2D>(@"background");
+            backgroundTexture2 = Content.Load<Texture2D>(@"images");
 
-            tank_up = Content.Load<Texture2D>(@"up");
-            tank_down = Content.Load<Texture2D>(@"down");
-            tank_left = Content.Load<Texture2D>(@"left");
-            tank_right = Content.Load<Texture2D>(@"right");
+            meUp = Content.Load<Texture2D>(@"meUp");
+            meDown = Content.Load<Texture2D>(@"meDown");
+            meLeft = Content.Load<Texture2D>(@"meLeft");
+            meRight = Content.Load<Texture2D>(@"meRight");
+
+            enemyUp = Content.Load<Texture2D>(@"enemyUp");
+            enemyDown = Content.Load<Texture2D>(@"enemyDown");
+            enemyLeft = Content.Load<Texture2D>(@"enemyLeft");
+            enemyRight = Content.Load<Texture2D>(@"enemyRight");
+
             coins = Content.Load<Texture2D>(@"coins");
             water = Content.Load<Texture2D>(@"water");
             brick = Content.Load<Texture2D>(@"brick");
             stone = Content.Load<Texture2D>(@"stone");
+            lifePack = Content.Load<Texture2D>(@"lifePack");
+            font = Content.Load<SpriteFont>("spriteFont1");
 
             screenWidth = device.PresentationParameters.BackBufferWidth;
             screenHeight = device.PresentationParameters.BackBufferHeight;
@@ -125,11 +138,12 @@ namespace WindowsGame1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.LightSeaGreen);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             DrawScenery();
+
 
             for (int i = 0; i < mapSize; i++)
             {
@@ -137,7 +151,7 @@ namespace WindowsGame1
                 {
                     if (wf.getField()[i, j].type.Equals("tank"))
                     {
-                        
+
                     }
 
                     if (wf.getField()[i, j].type.Equals("brick"))
@@ -159,30 +173,61 @@ namespace WindowsGame1
                     {
                         spriteBatch.Draw(coins, new Rectangle(i * (gameScreenSize / mapSize), j * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
                     }
+                    if (wf.getField()[i, j].type.Equals("lifePack"))
+                    {
+                        spriteBatch.Draw(lifePack, new Rectangle(i * (gameScreenSize / mapSize), j * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+                    }
                 }
             }
 
-           
-           foreach (KeyValuePair<String,Tank> t in wf.tanks){
-               if (t.Value.direction == 0)
-               {
-                   spriteBatch.Draw(tank_up, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
-               }
-               else if (t.Value.direction == 1)
-               {
-                   spriteBatch.Draw(tank_right, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
-               }
-               else if (t.Value.direction == 2)
-               {
-                   spriteBatch.Draw(tank_down, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
-               }
-               else if (t.Value.direction == 3)
-               {
-                   spriteBatch.Draw(tank_left, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
-               }
-               
-           }
-           
+
+            foreach (KeyValuePair<String, Tank> t in wf.tanks)
+            {
+
+                if (t.Value.getName() == wf.getMyTankName())
+                {
+                    if (t.Value.direction == 0)
+                    {
+                        spriteBatch.Draw(meUp, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+                    }
+                    else if (t.Value.direction == 1)
+                    {
+                        spriteBatch.Draw(meRight, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+                    }
+                    else if (t.Value.direction == 2)
+                    {
+                        spriteBatch.Draw(meDown, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+                    }
+                    else if (t.Value.direction == 3)
+                    {
+                        spriteBatch.Draw(meLeft, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+                    }
+                    this.DrawText(t.Value);
+
+                }
+
+                else
+                {
+                    if (t.Value.direction == 0)
+                    {
+                        spriteBatch.Draw(enemyUp, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+                    }
+                    else if (t.Value.direction == 1)
+                    {
+                        spriteBatch.Draw(enemyRight, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+                    }
+                    else if (t.Value.direction == 2)
+                    {
+                        spriteBatch.Draw(enemyDown, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+                    }
+                    else if (t.Value.direction == 3)
+                    {
+                        spriteBatch.Draw(enemyLeft, new Rectangle(t.Value.tankLoc.x * (gameScreenSize / mapSize), t.Value.tankLoc.y * (gameScreenSize / mapSize), gameScreenSize / mapSize, screenHeight / mapSize), Color.White);
+                    }
+                }
+
+            }
+
 
             spriteBatch.End();
 
@@ -191,9 +236,24 @@ namespace WindowsGame1
 
         private void DrawScenery()
         {
-            Rectangle screenRectangle = new Rectangle(0, 0, screenWidth, screenHeight);
-            spriteBatch.Draw(backgroundTexture, screenRectangle, Color.White);
+            Rectangle screenRectangle1 = new Rectangle(0, 0, screenWidth - 200, screenHeight);
+            spriteBatch.Draw(backgroundTexture1, screenRectangle1, Color.White);
+            Rectangle screenRectangle2 = new Rectangle(0, screenWidth - 200, 200, screenHeight);
+            spriteBatch.Draw(backgroundTexture2, screenRectangle2, Color.White);
          
+        }
+
+        private void DrawText(Tank t)
+        {
+
+            spriteBatch.DrawString(font, "POINTS:", new Vector2(605, 40), Color.Black);
+            spriteBatch.DrawString(font, t.points.ToString(), new Vector2(710, 40), Color.Black);
+
+            spriteBatch.DrawString(font, "COINS:", new Vector2(605, 60), Color.Black);
+            spriteBatch.DrawString(font, t.coins.ToString(), new Vector2(710, 60), Color.Black);
+
+            spriteBatch.DrawString(font, "HEALTH:", new Vector2(605, 80), Color.Black);
+            spriteBatch.DrawString(font, t.helth.ToString(), new Vector2(710, 80), Color.Black);
         }
     }
 

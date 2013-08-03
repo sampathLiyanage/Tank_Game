@@ -47,7 +47,7 @@ namespace WindowsGame1
     {
         public int direction; //0=N, 1=E, 2=S, 3=W
         private bool whetherShot;
-        private int helth, coins, points;
+        public int helth, coins, points;
         private Location[,] warfield;
         private String name;
         private bool initiated;
@@ -109,6 +109,12 @@ namespace WindowsGame1
             else
                 return "nothing";
         }
+
+        public String getName()
+        {
+            return name;
+        }
+
     }
 
     //represent coins
@@ -144,10 +150,44 @@ namespace WindowsGame1
             if (diff.TotalMilliseconds >= time || taken == true)
                 return true;
             return false;
+        }     
+    }
+
+    //represent lifePacks
+    public class LifePacks
+    {
+        private int mapSize;
+
+        DateTime startedTime;
+        int time;
+        private Location[,] warfield;
+        public bool taken;
+        public bool expired;
+        public Location lifePackLoc;
+        public LifePacks(int x, int y, int t, Location[,] wf, Tank myTank)
+        {
+            mapSize = Convert.ToInt16(ConfigurationSettings.AppSettings.Get("MapSize"));
+
+            taken = false;
+            expired = false;
+            startedTime = DateTime.Now;
+            time = t;
+            warfield = wf;
+            lifePackLoc = wf[x, y];
+            lifePackLoc.type = "lifePack";
+
+
+
         }
 
-
-        
+        public bool isExpired()
+        {
+            DateTime now = DateTime.Now;
+            TimeSpan diff = now.Subtract(startedTime);
+            if (diff.TotalMilliseconds >= time || taken == true)
+                return true;
+            return false;
+        }
     }
 
     //represents war field (game environment)
@@ -159,6 +199,7 @@ namespace WindowsGame1
         private Location[,] wfield;
         public Dictionary<String,Tank> tanks;
         private List<Coins> coinList;
+        private List<LifePacks> lifePackList;
         private Listner listner;
         private Response response;
         private Char[] dataIn;
@@ -181,6 +222,7 @@ namespace WindowsGame1
             }
             tanks = new Dictionary<String, Tank>();
             coinList = new List<Coins>();
+            lifePackList = new List<LifePacks>();
             listner = Listner.Instance;
             listner.start(this);
             initiated = false;
@@ -225,6 +267,11 @@ namespace WindowsGame1
             else if (dataIn[0].Equals('G') && dataIn[1].Equals(':'))
             {  //if game is being intiated
                 updateView(dataIn);
+            }
+            
+            else   if (dataIn[0].Equals('S') && dataIn[1].Equals(':'))
+            {  //if game is being intiated
+                setStartPosition(dataIn);
             }
 
             //if coins appear
@@ -271,6 +318,31 @@ namespace WindowsGame1
          
 
             initiated = true;
+        }
+
+         // posion the tanks in initial positions
+        private void setStartPosition(Char[] dataInput)
+        {
+            System.Console.WriteLine("set start postion");
+            String operands = new String(dataInput);
+            operands = operands.Replace("#", "");
+            string[] operands_1 = Regex.Split(operands, ":");
+            String[] operands_2;
+            for (int i = 1; i < operands_1.Length; i++)
+            {
+                operands_2 = Regex.Split(operands_1[i], ";");
+                String nm = Convert.ToString(operands_2[0]);
+                String[] operands_21 = Regex.Split(operands_2[1], ",");
+                int X = Convert.ToInt32(operands_21[0]);
+                int Y = Convert.ToInt32(operands_21[1]);
+                int dir = Convert.ToInt32(operands_2[2]);
+                bool ws = false;
+                int h = 100;
+                int c = 0;
+                int p = 0;
+                this.setTank(nm, X, Y, dir, ws, h, c, p);
+            }
+
         }
 
         //update game view according to the server responces
@@ -325,6 +397,20 @@ namespace WindowsGame1
             this.newCoins(X, Y, vl, lt);
         }
 
+        //update lifePacksaccording to the server responses
+        private void updateLifePacks(Char[] dataInput)
+        {
+            System.Console.WriteLine("new lifePacks appers");
+            String operands = new String(dataInput);
+            operands = operands.Replace("#", "");
+            string[] operands_1 = Regex.Split(operands, ":");
+            String[] operands_2 = Regex.Split(operands_1[1], ",");
+            int X = Convert.ToInt16(operands_2[0]);
+            int Y = Convert.ToInt16(operands_2[1]);
+            int lt = Convert.ToInt32(operands_1[2]);
+         
+            this.newLifePacks(X, Y, lt);
+        }
 
        
 
@@ -416,11 +502,18 @@ namespace WindowsGame1
             coinList.Add(new Coins(X, Y, v, t, wfield, (Tank)tanks[mytankName]));
         }
 
+         private void newLifePacks(int X, int Y,  int t)
+        {
+            lifePackList.Add(new LifePacks(X, Y, t, wfield, (Tank)tanks[mytankName]));
+        }
+
         //should be called to update coins and life packs when they are expired
         private void update()
         {
             //updating coins
             List<Coins> newCList = new List<Coins>();
+            List<LifePacks> newLList = new List<LifePacks>();
+            
             foreach (Coins c in coinList)
             {
                 if (c.isExpired())
@@ -435,7 +528,18 @@ namespace WindowsGame1
             coinList = newCList;
             //updating life packs(to be implemented)
 
+            foreach (LifePacks l in lifePackList)
+            {
+                if (l.isExpired())
+                {
+                    l.expired = true;
+                    l.lifePackLoc.type = "empty";
+                }
+                else
+                    newLList.Add(l);
+            }
 
+            lifePackList = newLList;
         }
 
 
@@ -445,7 +549,10 @@ namespace WindowsGame1
             coinList.Remove(c);
         }
 
-
+        public String getMyTankName()
+        {
+            return mytankName;
+        }
         //functions to be called by game engine
         public Tank getTank(String nm)
         {
